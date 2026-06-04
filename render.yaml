@@ -1,0 +1,61 @@
+services:
+  - type: web
+    name: reborn-api
+    runtime: docker
+    plan: free
+    region: oregon  # change if needed (us-east, eu-west, ap-south, etc.)
+    healthCheckPath: /health
+    dockerfilePath: apps/api/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: DATABASE_URL
+        scope: service
+        sync: false
+      - key: AUTH_JWT_SECRET
+        scope: service
+        sync: false
+      - key: API_PORT
+        value: "4000"
+      - key: NODE_ENV
+        value: production
+    # Run migrations on every deploy
+    postdeploy: npm run db:migrate && npm run db:seed
+
+  - type: web
+    name: reborn-web
+    runtime: docker
+    plan: free
+    region: oregon
+    healthCheckPath: /
+    dockerfilePath: apps/web/Dockerfile
+    dockerContext: .
+    envVars:
+      - key: NEXTAUTH_URL
+        scope: service
+        sync: false
+      - key: NEXTAUTH_SECRET
+        scope: service
+        sync: false
+      - key: NEXT_PUBLIC_API_URL
+        scope: service
+        sync: false
+      - key: API_INTERNAL_URL
+        value: https://reborn-api.onrender.com
+      - key: NODE_ENV
+        value: production
+    depends:
+      - reborn-api
+
+  - type: pserv
+    name: reborn-postgres
+    runtime: postgres15
+    plan: free
+    region: oregon
+    ipAllowList: []  # only accessible from Render services on same account
+    envVars:
+      - key: POSTGRES_USER
+        value: reborn
+      - key: POSTGRES_PASSWORD
+        generateValue: true
+      - key: POSTGRES_DB
+        value: reborn

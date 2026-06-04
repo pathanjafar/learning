@@ -27,29 +27,45 @@ submitRouter.post("/submit", requireAuth, async (req, res) => {
     return res.status(400).json({ error: `language '${language}' not allowed for this problem` });
   }
 
-  const drivers = (problem.drivers as Record<string, string> | null) ?? {};
+  // In "simple" mode (no Judge0), just store the submission as pending review.
+  // (If GRADER_URL is set, the old auto-grading flow can still run.)
+  const graderUrl = process.env.GRADER_URL;
+  const userId = req.user!.sub;
 
-  let grade;
-  try {
-    grade = await callGrader({
-      language,
-      code,
-      ioMode: problem.ioMode,
-      driver: problem.ioMode === "FUNCTION" ? drivers[language] : undefined,
-      testCases: problem.testCases.map((t) => ({
-        input: t.input,
-        expected: t.expected,
-        isHidden: t.isHidden,
-        compareMode: t.compareMode,
-        weight: t.weight,
-      })),
-    });
-  } catch (e) {
-    console.error("grader error", e);
-    return res.status(502).json({ error: "grader unavailable" });
+  let grade: any;
+  if (graderUrl) {
+    // Auto-grading enabled: call the grader
+    const drivers = (problem.drivers as Record<string, string> | null) ?? {};
+    try {
+      grade = await callGrader({
+        language,
+        code,
+        ioMode: problem.ioMode,
+        driver: problem.ioMode === "FUNCTION" ? drivers[language] : undefined,
+        testCases: problem.testCases.map((t) => ({
+          input: t.input,
+          expected: t.expected,
+          isHidden: t.isHidden,
+          compareMode: t.compareMode,
+          weight: t.weight,
+        })),
+      });
+    } catch (e) {
+      console.error("grader error", e);
+      return res.status(502).json({ error: "grader unavailable" });
+    }
+  } else {
+    // No grader: submission is pending manual review
+    grade = {
+      verdict: "PENDING",
+      passed: null,
+      total: problem.testCases.length,
+      results: [],
+      maxTimeMs: null,
+      maxMemoryKb: null,
+    };
   }
 
-  const userId = req.user!.sub;
   await prisma.submission.create({
     data: {
       userId,
@@ -57,15 +73,14 @@ submitRouter.post("/submit", requireAuth, async (req, res) => {
       code,
       lang: language,
       verdict: grade.verdict,
-      passed: grade.passed,
+      passed: grade.passed ?? undefined,
       total: grade.total,
-      runtimeMs: grade.maxTimeMs,
-      memoryKb: grade.maxMemoryKb,
+      runtimeMs: grade.maxTimeMs ?? undefined,
+      memoryKb: grade.maxMemoryKb ?? undefined,
     },
   });
 
-  // Update progress + streak on a fully-correct solve.
-  // (find-then-write rather than upsert: Prisma can't match a compound unique with a null field.)
+  // Update progress + streak only if auto-grading says AC.
   if (grade.verdict === "AC") {
     const existing = await prisma.progress.findFirst({
       where: { userId, problemId: problem.id, lessonId: null },
@@ -78,9 +93,20 @@ submitRouter.post("/submit", requireAuth, async (req, res) => {
       });
     }
     await bumpStreak(userId);
+  } else if (grade.verdict === "PENDING") {
+    // Mark as submitted (not solved) for manual review
+    const existing = await prisma.progress.findFirst({
+      where: { userId, problemId: problem.id, lessonId: null },
+    });
+    if (existing) {
+      await prisma.progress.update({ where: { id: existing.id }, data: { status: "submitted" } });
+    } else {
+      await prisma.progress.create({
+        data: { userId, topicId: problem.topicId, problemId: problem.id, status: "submitted" },
+      });
+    }
   }
 
-  // The grader already stripped hidden inputs/expected; safe to return verbatim.
   res.json(grade);
 });
 

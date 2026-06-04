@@ -54,6 +54,7 @@ export default function ProblemWorkbench({ problem }: { problem: ProblemView }) 
   }
 
   const ok = result?.verdict === "AC";
+  const pending = result?.verdict === "PENDING";
 
   return (
     <div className="rounded-xl border border-slate-800 bg-panel overflow-hidden">
@@ -64,7 +65,7 @@ export default function ProblemWorkbench({ problem }: { problem: ProblemView }) 
         </select>
         <button onClick={submit} disabled={running}
           className="rounded bg-accent px-4 py-1.5 text-sm font-medium text-white disabled:opacity-50">
-          {running ? "Running…" : "Submit"}
+          {running ? "Submitting…" : "Submit for Review"}
         </button>
       </div>
 
@@ -75,25 +76,36 @@ export default function ProblemWorkbench({ problem }: { problem: ProblemView }) 
         {err && <p className="text-red-400">{err}</p>}
         {result && (
           <div>
-            <p className={ok ? "text-green-400 font-semibold" : "text-amber-400 font-semibold"}>
-              {result.verdict} — passed {result.passed}/{result.total}
-            </p>
-            {result.compileOutput && (
-              <pre className="mt-2 bg-ink p-2 rounded text-xs text-red-300 overflow-x-auto">{result.compileOutput}</pre>
+            {pending ? (
+              <div className="rounded bg-blue-900/30 border border-blue-700 p-3">
+                <p className="text-blue-400 font-semibold">✓ Submitted for Review</p>
+                <p className="text-blue-300 text-xs mt-1">
+                  Your code has been saved. An instructor will review and provide feedback.
+                </p>
+              </div>
+            ) : (
+              <div>
+                <p className={ok ? "text-green-400 font-semibold" : "text-amber-400 font-semibold"}>
+                  {result.verdict} — passed {result.passed}/{result.total}
+                </p>
+                {result.compileOutput && (
+                  <pre className="mt-2 bg-ink p-2 rounded text-xs text-red-300 overflow-x-auto">{result.compileOutput}</pre>
+                )}
+                <ul className="mt-2 space-y-1">
+                  {result.results.map((c) => (
+                    <li key={c.index} className="flex items-center gap-2">
+                      <span className={c.status === "AC" ? "text-green-400" : "text-red-400"}>
+                        {c.status === "AC" ? "✓" : "✗"}
+                      </span>
+                      <span className="text-slate-400">
+                        Test {c.index + 1}{c.isHidden ? " (hidden)" : ""}
+                        {c.timeMs != null ? ` · ${c.timeMs}ms` : ""}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
-            <ul className="mt-2 space-y-1">
-              {result.results.map((c) => (
-                <li key={c.index} className="flex items-center gap-2">
-                  <span className={c.status === "AC" ? "text-green-400" : "text-red-400"}>
-                    {c.status === "AC" ? "✓" : "✗"}
-                  </span>
-                  <span className="text-slate-400">
-                    Test {c.index + 1}{c.isHidden ? " (hidden)" : ""}
-                    {c.timeMs != null ? ` · ${c.timeMs}ms` : ""}
-                  </span>
-                </li>
-              ))}
-            </ul>
           </div>
         )}
       </div>
