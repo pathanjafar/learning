@@ -1,0 +1,55 @@
+---
+title: "Tries (Prefix Trees)"
+level: BEGINNER
+order: 1
+---
+
+# Tries
+
+A **trie** (prefix tree) stores strings as paths down a tree, where each node represents one
+character. All words sharing a prefix share the same path — making prefix queries extremely fast.
+
+```
+root
+ ├─ c → a → t   (cat)
+ │        └ r   (car)
+ └─ d → o → g   (dog)
+```
+
+## Structure
+
+```python
+class TrieNode:
+    def __init__(self):
+        self.children = {}      # char -> TrieNode
+        self.is_word = False    # marks end of a complete word
+```
+
+## Operations — O(L), L = word length
+
+```python
+def insert(root, word):
+    node = root
+    for ch in word:
+        node = node.children.setdefault(ch, TrieNode())
+    node.is_word = True
+
+def search(root, word):
+    node = root
+    for ch in word:
+        if ch not in node.children: return False
+        node = node.children[ch]
+    return node.is_word
+```
+
+Insert/search/prefix-check cost **O(L)** — independent of how many words are stored.
+
+## When to use it
+
+- **Autocomplete / prefix search** ("words starting with 'pre'")
+- **Spell checkers / dictionaries**
+- **Word games** (Boggle, word search II)
+- **IP routing**, longest-prefix matching
+
+A trie beats a hash set when you need **prefix** queries, not just exact membership. Trade-off:
+higher memory due to many node objects.

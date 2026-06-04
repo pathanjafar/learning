@@ -1,0 +1,51 @@
+---
+title: "Advanced: sliding window & pattern matching"
+level: ADVANCED
+order: 3
+---
+
+# Advanced string algorithms
+
+## Sliding window on strings
+
+Many "longest/shortest substring with a property" problems use a window `[left, right]` plus a
+hash map of the characters inside it.
+
+```python
+def longest_unique(s):
+    last = {}          # char -> last index seen
+    l = best = 0
+    for r, ch in enumerate(s):
+        if ch in last and last[ch] >= l:
+            l = last[ch] + 1      # jump left past the repeat
+        last[ch] = r
+        best = max(best, r - l + 1)
+    return best
+```
+
+Each character enters and leaves the window once → **O(n)**. Same shape solves "minimum window
+substring", "longest substring with at most K distinct", and "permutation in string".
+
+## Linear-time pattern matching (KMP)
+
+Naive substring search is O(n·m) because it re-checks characters after a mismatch. **KMP**
+precomputes a "failure" table so the search never backtracks in the text — **O(n + m)**. The table
+records, for each prefix, the longest proper prefix that's also a suffix, letting the pattern shift
+intelligently on a mismatch.
+
+**Rabin-Karp** is an alternative: hash the pattern and each window of the text, comparing hashes in
+O(1) with a rolling hash — great for multiple-pattern search.
+
+## String DP
+
+When the answer depends on overlapping subproblems across two strings, use a 2-D DP table:
+
+- **Longest common subsequence** — `dp[i][j]` = LCS of prefixes
+- **Edit distance** — min insert/delete/replace to transform one into the other
+- **Palindromic substrings** — expand around centers, or DP on intervals
+
+## Takeaway
+
+Reach for **sliding window** when the substring is contiguous and you optimize a length/count;
+reach for **DP** when comparing/transforming two strings; reach for **KMP/Rabin-Karp** when you
+need fast exact matching.

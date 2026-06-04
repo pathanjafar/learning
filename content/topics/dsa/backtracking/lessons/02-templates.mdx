@@ -1,0 +1,70 @@
+---
+title: "Backtracking Templates: subsets, permutations, constraints"
+level: INTERMEDIATE
+order: 2
+---
+
+# Backtracking Templates
+
+Every backtracking solution is **choose → explore → un-choose**. Here are the concrete shapes.
+
+## Subsets
+
+```python
+def subsets(nums):
+    res = []
+    def bt(start, path):
+        res.append(path[:])                 # every node is a valid subset
+        for i in range(start, len(nums)):
+            path.append(nums[i])
+            bt(i + 1, path)                 # i+1: don't reuse earlier elements
+            path.pop()
+    bt(0, [])
+    return res
+```
+
+## Permutations
+
+```python
+def permute(nums):
+    res = []
+    def bt(path, used):
+        if len(path) == len(nums):
+            res.append(path[:]); return
+        for i in range(len(nums)):
+            if used[i]: continue
+            used[i] = True; path.append(nums[i])
+            bt(path, used)
+            path.pop(); used[i] = False
+    bt([], [False]*len(nums))
+    return res
+```
+
+## Combination sum (reuse allowed)
+
+```python
+def combo(cands, target):
+    res = []
+    def bt(start, path, remain):
+        if remain == 0: res.append(path[:]); return
+        for i in range(start, len(cands)):
+            if cands[i] > remain: continue
+            path.append(cands[i])
+            bt(i, path, remain - cands[i])   # i (not i+1): reuse same element
+            path.pop()
+    bt(0, [], target)
+    return res
+```
+
+## Skipping duplicates
+
+Sort first, then `if i > start and a[i] == a[i-1]: continue` to avoid duplicate results (Subsets
+II, Combination Sum II).
+
+## Constraint solving (N-Queens, Sudoku)
+
+Place → recurse → if invalid or dead-end, undo. **Pruning** (rejecting bad partial states early)
+is what makes exponential search tractable.
+
+**Recognition cue:** "find **all** subsets/permutations/combinations" or "find a configuration
+satisfying constraints."

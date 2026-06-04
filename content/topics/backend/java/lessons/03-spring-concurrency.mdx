@@ -1,0 +1,58 @@
+---
+title: "Spring Boot, Concurrency & the JVM"
+level: ADVANCED
+order: 3
+---
+
+# Spring Boot, Concurrency & Production
+
+## Spring Boot — the standard backend framework
+
+```java
+@RestController
+@RequestMapping("/users")
+class UserController {
+    private final UserService service;
+    UserController(UserService service) { this.service = service; }  // DI via constructor
+
+    @GetMapping("/{id}")
+    User get(@PathVariable Long id) { return service.find(id); }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    User create(@RequestBody User u) { return service.save(u); }
+}
+```
+
+- **Dependency Injection** — Spring wires beans together; you code to interfaces.
+- **Spring Data JPA** maps entities to tables and generates repositories.
+- Layers: Controller → Service → Repository.
+
+## Database access
+
+**JDBC** is the low-level API; **JPA/Hibernate** is the ORM most apps use:
+```java
+@Entity class User { @Id @GeneratedValue Long id; String name; }
+interface UserRepo extends JpaRepository<User, Long> {}   // CRUD for free
+```
+
+## Concurrency
+
+The JVM has real threads. Prefer high-level tools over raw `Thread`:
+```java
+ExecutorService pool = Executors.newFixedThreadPool(4);
+Future<Integer> f = pool.submit(() -> compute());
+```
+Know thread safety, `synchronized`, `volatile`, `java.util.concurrent` (`ConcurrentHashMap`,
+`AtomicInteger`), and modern virtual threads (Project Loom) for massive I/O concurrency.
+
+## The JVM
+
+Source → **bytecode** → run by the JVM, which **JIT-compiles** hot paths to native code. Garbage
+collection manages memory automatically. "Write once, run anywhere."
+
+## Build & deploy
+
+- **Maven** or **Gradle** for builds and dependencies.
+- Package as a runnable JAR (`java -jar app.jar`), containerize with Docker, run behind Nginx.
+- Add CI/CD and monitoring (Actuator endpoints expose health/metrics).

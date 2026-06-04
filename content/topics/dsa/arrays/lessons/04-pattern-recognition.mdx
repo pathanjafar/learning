@@ -1,0 +1,29 @@
+---
+title: "Pattern recognition: which array technique?"
+level: ADVANCED
+order: 4
+---
+
+# Pattern recognition guide
+
+Match the problem's *signal* to the technique:
+
+| If the problem says… | Reach for | Example |
+|----------------------|-----------|---------|
+| "find a pair / does X exist" | Hash set/map | Two Sum, Contains Duplicate |
+| "subarray / contiguous with sum/length" | Sliding window or prefix sum | Subarray Sum = K |
+| "sorted array, find pair/triplet" | Two pointers | 3-Sum, Two Sum II |
+| "from both ends inward" | Two pointers | Trapping Rain Water |
+| "modify in place, O(1) space" | Write pointer | Move Zeroes |
+| "product/sum of all except self" | Prefix + suffix pass | Product Except Self |
+| "max/min contiguous sum" | Kadane | Maximum Subarray |
+| "rotate / shift by k" | Index arithmetic `(i+k)%n` | Rotate Array |
+
+## Decision flow
+
+1. Is it about **pairs/membership**? → hashing.
+2. Is it about a **contiguous window**? → sliding window / prefix.
+3. Is the array **sorted** or do you scan **from both ends**? → two pointers.
+4. Must you mutate **in place**? → write pointer.
+
+When in doubt, write the brute force first, then ask which of the above removes the inner loop.

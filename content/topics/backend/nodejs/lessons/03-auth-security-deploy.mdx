@@ -1,0 +1,56 @@
+---
+title: "Auth, Security, Databases & Deployment"
+level: ADVANCED
+order: 3
+---
+
+# Production Node.js
+
+## Authentication & security
+
+```js
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+
+const hash = await bcrypt.hash(password, 10);          // never store plain passwords
+const ok = await bcrypt.compare(password, user.hash);
+
+const token = jwt.sign({ sub: user.id, role }, SECRET, { expiresIn: "7d" });
+const claims = jwt.verify(token, SECRET);              // on each protected request
+```
+
+- **JWT** for stateless auth (or server **sessions** for stateful). (This platform uses JWT.)
+- **OWASP basics:** hash passwords (bcrypt/argon2), validate & sanitize input, use parameterized
+  queries to stop **SQL injection**, escape output to stop **XSS**, use CSRF tokens for cookie
+  auth, set **CORS** correctly, and **rate-limit** to blunt brute-force/DoS.
+- Always serve over **HTTPS/TLS** (terminate at Nginx).
+
+## Database integration
+
+```js
+// ORM example (Prisma); also Sequelize/TypeORM, or Mongoose (ODM) for MongoDB
+const users = await prisma.user.findMany({ where: { active: true } });
+```
+Use **connection pooling**, **migrations** for schema changes, and **seeding** for fixtures.
+
+## Error handling
+
+Centralize it: wrap async handlers, throw typed errors, and catch them in one error middleware.
+Log with structured loggers (pino/winston) and ship to a monitoring service (Sentry).
+
+```js
+const asyncH = fn => (req, res, next) => fn(req, res, next).catch(next);
+```
+
+## Testing
+
+**Jest** for unit/integration tests; **supertest** to hit your Express app in-process. Mock
+external services; aim for coverage on business logic, not framework glue.
+
+## Deployment
+
+- Config via **environment variables** (never commit secrets).
+- Keep the process alive with **PM2** (cluster mode for multi-core) *or* let **Docker**/orchestrator
+  restart it — pick one.
+- Put **Nginx** in front for TLS + reverse proxy; automate with **CI/CD**; deploy to a VPS or cloud
+  (AWS/Render/Fly).

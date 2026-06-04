@@ -1,0 +1,34 @@
+---
+title: "HTML: structure of a web page"
+level: BEGINNER
+order: 1
+---
+
+# HTML
+
+HTML (HyperText Markup Language) describes the **structure** of a web page using elements
+(tags). The browser parses these into a tree (the DOM) that CSS styles and JavaScript
+manipulates.
+
+## A minimal document
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>My page</title>
+  </head>
+  <body>
+    <h1>Hello</h1>
+    <p>This is a paragraph.</p>
+  </body>
+</html>
+```
+
+## Semantic elements
+
+Prefer meaningful tags over generic `<div>`s — they improve accessibility and SEO:
+`<header>`, `<nav>`, `<main>`, `<article>`, `<section>`, `<footer>`.
+
+Next: CSS for styling, then JavaScript for interactivity.

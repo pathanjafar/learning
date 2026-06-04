@@ -1,0 +1,58 @@
+---
+title: "Sliding Window Templates"
+level: INTERMEDIATE
+order: 2
+---
+
+# Sliding Window Templates
+
+Two templates handle nearly all window problems.
+
+## Fixed-size window
+
+When `k` is given, slide a constant-width window, updating incrementally.
+```python
+window = sum(a[:k]); best = window
+for r in range(k, len(a)):
+    window += a[r] - a[r - k]      # add entering, drop leaving
+    best = max(best, window)
+```
+
+## Variable-size window (the workhorse)
+
+Grow `right`; when the window violates a constraint, shrink `left` until valid again.
+```python
+from collections import defaultdict
+count = defaultdict(int)
+left = best = 0
+for right, ch in enumerate(s):
+    count[ch] += 1
+    while invalid(count):          # e.g. a char count > 1
+        count[s[left]] -= 1
+        left += 1
+    best = max(best, right - left + 1)
+```
+
+## "At most K" → "exactly K" trick
+
+Counting subarrays with **exactly** K of something is hard directly, but
+`exactly(K) = atMost(K) - atMost(K-1)`, and "at most" is a clean variable window.
+```python
+def at_most(k):
+    left = res = 0; seen = defaultdict(int)
+    for right, x in enumerate(nums):
+        seen[x] += 1
+        while len(seen_with_positive_count) > k:
+            seen[nums[left]] -= 1
+            if seen[nums[left]] == 0: del seen[nums[left]]
+            left += 1
+        res += right - left + 1
+    return res
+```
+
+## Why it's O(n)
+
+`left` and `right` each only move forward, so total pointer movement is ≤ 2n.
+
+**Recognition cue:** "longest/shortest/count of **contiguous** subarray/substring" with a sum,
+length, or distinct-count constraint.

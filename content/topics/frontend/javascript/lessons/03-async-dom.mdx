@@ -1,0 +1,66 @@
+---
+title: "Async JavaScript, the DOM & ES6+"
+level: ADVANCED
+order: 3
+---
+
+# Async, DOM & ES6+
+
+## Asynchronous JavaScript
+
+JS is single-threaded but non-blocking. Async work (network, timers) is handled off the main
+thread and resumed via the **event loop**.
+
+```js
+// Promise
+fetch("/api/data")
+  .then(res => res.json())
+  .then(data => use(data))
+  .catch(err => handle(err))
+  .finally(() => stopSpinner());
+
+// async/await — same thing, readable
+async function load() {
+  try {
+    const res = await fetch("/api/data");
+    const data = await res.json();
+    return data;
+  } catch (err) { handle(err); }
+}
+
+await Promise.all([a(), b()]);   // wait for all
+await Promise.race([a(), b()]);  // first to settle
+```
+
+**Event loop & queues:** the call stack runs synchronous code; finished async callbacks wait in
+queues. **Microtasks** (Promise callbacks) run before **macrotasks** (`setTimeout`) — which is why
+a resolved Promise's `.then` fires before a `setTimeout(0)`.
+
+## DOM manipulation
+
+```js
+const el = document.querySelector(".item");
+el.textContent = "Hi";
+el.classList.toggle("active");
+el.setAttribute("data-id", "5");
+
+const child = document.createElement("li");
+el.appendChild(child);
+el.remove();
+```
+
+**Events & delegation** — attach one listener on a parent and use `event.target` instead of many
+listeners. Events **bubble** up from target to ancestors (and can **capture** downward); stop with
+`event.stopPropagation()`, prevent defaults with `event.preventDefault()`.
+
+## ES6+ essentials
+
+```js
+const { a, b } = obj;            // destructuring
+const arr2 = [...arr, 4];        // spread
+const msg = `Hi ${name}`;        // template literal
+import { thing } from "./mod.js"; export default fn;  // modules
+```
+
+Also know: hoisting and the **temporal dead zone** for `let`/`const`, IIFEs, the module pattern,
+and common patterns (singleton, observer).

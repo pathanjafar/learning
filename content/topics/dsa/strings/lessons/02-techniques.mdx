@@ -1,0 +1,60 @@
+---
+title: "String techniques: reverse, palindrome, anagram"
+level: INTERMEDIATE
+order: 2
+---
+
+# Core string techniques
+
+Most string interview problems are built from a few reusable moves.
+
+## Reversing
+
+```python
+rev = s[::-1]                 # Python slice
+```
+```java
+String rev = new StringBuilder(s).reverse().toString();
+```
+
+For an **in-place** reverse on a char array, use two pointers swapping inward — O(n) time, O(1)
+extra space.
+
+## Two pointers on strings
+
+Converging pointers solve palindrome and comparison problems:
+
+```python
+def is_palindrome(s):
+    l, r = 0, len(s) - 1
+    while l < r:
+        if s[l] != s[r]:
+            return False
+        l += 1; r -= 1
+    return True
+```
+
+For "valid palindrome" variants, first **filter** to alphanumeric and lowercase, then two-point.
+
+## Anagrams via counting
+
+Two strings are anagrams iff they have identical character counts:
+
+```python
+from collections import Counter
+def is_anagram(s, t):
+    return Counter(s) == Counter(t)
+```
+```java
+// O(n): one pass up, one pass down
+int[] c = new int[26];
+for (char ch : s.toCharArray()) c[ch - 'a']++;
+for (char ch : t.toCharArray()) if (--c[ch - 'a'] < 0) return false;
+```
+
+## Grouping by signature
+
+To group anagrams together, hash each word by a **canonical key** — its sorted letters or its
+count tuple — and bucket words sharing a key. This turns an O(n²) pairwise comparison into O(n·k).
+
+Next: the advanced lesson covers sliding window on strings and linear-time pattern matching.

@@ -1,0 +1,63 @@
+---
+title: "BST Operations & Order Statistics"
+level: INTERMEDIATE
+order: 2
+---
+
+# BST Operations in Depth
+
+The BST invariant (left < node < right) means you descend toward the answer, halving the search
+space each step when balanced.
+
+## Search, insert, delete
+
+```python
+def insert(root, val):
+    if not root: return TreeNode(val)
+    if val < root.val: root.left = insert(root.left, val)
+    else:              root.right = insert(root.right, val)
+    return root
+```
+
+**Delete** has three cases:
+1. **Leaf** → remove it.
+2. **One child** → replace node with its child.
+3. **Two children** → replace value with the **inorder successor** (smallest in the right
+   subtree), then delete that successor.
+
+## Inorder = sorted
+
+The single most useful BST fact: an inorder traversal yields values in ascending order.
+```python
+def inorder(node, out):
+    if not node: return
+    inorder(node.left, out); out.append(node.val); inorder(node.right, out)
+```
+Use it to **validate a BST** (the sequence must be strictly increasing) and to find the **kth
+smallest** (stop at the kth inorder visit — no need to materialize the whole list).
+
+## Validate with bounds (cleaner)
+
+```python
+def valid(node, lo=float("-inf"), hi=float("inf")):
+    if not node: return True
+    if not (lo < node.val < hi): return False
+    return valid(node.left, lo, node.val) and valid(node.right, node.val, hi)
+```
+
+## LCA using the ordering
+
+In a BST you don't need to search both subtrees — compare values and descend:
+```python
+while root:
+    if p < root.val and q < root.val: root = root.left
+    elif p > root.val and q > root.val: root = root.right
+    else: return root           # split point = LCA
+```
+
+## Balance matters
+
+Sorted inserts degrade a plain BST to O(n). Self-balancing trees (AVL, Red-Black) rotate to keep
+height O(log n); language libraries (`TreeMap`, `std::map`) use them.
+
+**Recognition cue:** sorted-order needs, kth-element, range queries on ordered data.

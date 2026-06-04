@@ -1,0 +1,58 @@
+---
+title: "Hashing Patterns: frequency, grouping, prefix-sum"
+level: INTERMEDIATE
+order: 2
+---
+
+# Hashing Patterns
+
+The concept lesson covered *what* a hash map is. Here are the recurring *patterns* that solve most
+hashing problems.
+
+## 1. Frequency counting
+
+Count occurrences in one pass, then answer questions about them.
+```python
+from collections import Counter
+freq = Counter(nums)            # {value: count}
+most = freq.most_common(1)[0]   # top element
+```
+Solves: majority element, first unique character, top-K (with a heap).
+
+## 2. Complement lookup
+
+Store what you've seen; check for the value that completes the answer.
+```python
+seen = {}
+for i, n in enumerate(nums):
+    if target - n in seen:
+        return [seen[target - n], i]   # Two Sum
+    seen[n] = i
+```
+
+## 3. Grouping by canonical key
+
+Bucket items that share a normalized signature.
+```python
+groups = defaultdict(list)
+for w in words:
+    groups[tuple(sorted(w))].append(w)   # group anagrams
+```
+
+## 4. Prefix-sum + hash map
+
+Count subarrays with a target sum in O(n) by remembering running sums.
+```python
+count = 0; run = 0; seen = {0: 1}
+for n in nums:
+    run += n
+    count += seen.get(run - k, 0)   # subarrays summing to k
+    seen[run] = seen.get(run, 0) + 1
+```
+
+## 5. Seen-set for O(1) membership
+
+Detect duplicates, cycles (Happy Number), or "have I visited this state?" in BFS/DFS.
+
+**Recognition cue:** any time a nested loop is checking "does X exist / how many X," a hash
+structure usually collapses it to one pass.

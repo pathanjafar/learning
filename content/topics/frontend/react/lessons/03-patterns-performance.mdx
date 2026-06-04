@@ -1,0 +1,48 @@
+---
+title: "Patterns, Routing, Performance & Testing"
+level: ADVANCED
+order: 3
+---
+
+# Advanced React
+
+## Component patterns
+
+- **Custom hooks** — the modern way to share logic (preferred over the older patterns below).
+- **Higher-Order Components (HOC)** — a function that wraps a component to add behavior:
+  `withAuth(Dashboard)`.
+- **Render props** — pass a function as a child to share state: `<Mouse>{pos => …}</Mouse>`.
+- **Compound components** — related components share implicit state via context
+  (`<Tabs><Tab/></Tabs>`).
+
+## Routing (React Router v6)
+
+```jsx
+<Routes>
+  <Route path="/" element={<Home />} />
+  <Route path="/users/:id" element={<User />} />   {/* dynamic param */}
+  <Route path="/admin" element={<Protected><Admin /></Protected>} />
+</Routes>
+// const { id } = useParams(); const navigate = useNavigate();
+```
+Supports nested routes, query params, and **lazy loading** routes for code splitting.
+
+## Performance
+
+- **`React.memo`** — skip re-render when props are unchanged.
+- **`useMemo` / `useCallback`** — stabilize expensive values/functions passed to children.
+- **Code splitting** — `const X = lazy(() => import("./X"))` + `<Suspense>`.
+- **Virtualization** (react-window) — render only visible rows in huge lists.
+- Profile with React DevTools to find wasted renders before optimizing.
+
+## Forms & data
+
+- **Controlled** inputs bind value to state; **uncontrolled** read via refs. Libraries
+  **React Hook Form** / **Formik** handle validation and reduce re-renders.
+- **Data fetching:** `fetch`/`axios` with loading & error states; libraries like **React Query**
+  add caching, retries, and revalidation.
+
+## Testing
+
+- **Jest** as the runner; **React Testing Library** to test behavior the way users experience it
+  (`render`, `screen.getByRole`, `fireEvent`). Mock network calls; write unit + integration tests.

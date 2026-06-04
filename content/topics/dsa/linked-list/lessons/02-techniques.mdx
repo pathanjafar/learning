@@ -1,0 +1,66 @@
+---
+title: "Linked List Techniques: reversal, cycle, merge"
+level: INTERMEDIATE
+order: 2
+---
+
+# Linked List Techniques
+
+## In-place reversal
+
+Rewire `next` pointers as you walk — O(1) space.
+```python
+prev = None
+cur = head
+while cur:
+    nxt = cur.next
+    cur.next = prev
+    prev = cur
+    cur = nxt
+return prev            # new head
+```
+Variant: reverse only a sublist `[m, n]`, or reverse in **k-groups** (count k, reverse, recurse).
+
+## Fast/slow pointers
+
+Find the middle, detect a cycle, and locate the cycle start (Floyd's).
+```python
+slow = fast = head
+while fast and fast.next:
+    slow = slow.next
+    fast = fast.next.next
+    if slow is fast:           # cycle detected
+        break
+```
+To find the cycle's entry: after meeting, move one pointer to head and advance both by 1; they
+meet at the start.
+
+## Dummy head
+
+Avoid special-casing the head when it might change.
+```python
+dummy = ListNode(0, head)
+prev = dummy
+# ... operate using prev.next ...
+return dummy.next
+```
+Essential for: remove Nth from end, merge lists, partition, remove duplicates.
+
+## Merge two sorted lists
+
+```python
+dummy = tail = ListNode(0)
+while l1 and l2:
+    if l1.val <= l2.val: tail.next, l1 = l1, l1.next
+    else:                tail.next, l2 = l2, l2.next
+    tail = tail.next
+tail.next = l1 or l2
+return dummy.next
+```
+
+## Two-pass vs one-pass
+
+"Remove Nth from end" in one pass: advance a lead pointer N steps, then move both until lead hits
+the end — the trailing pointer lands just before the target.
+
+**Recognition cue:** pointer rewiring, "in O(1) space," or cycle/midpoint questions.

@@ -1,0 +1,61 @@
+---
+title: "Types in Depth: Generics, Unions & Utilities"
+level: INTERMEDIATE
+order: 2
+---
+
+# TypeScript Types in Depth
+
+## Interfaces & type aliases
+
+```ts
+interface User { id: number; name: string; email?: string }
+type ID = string | number;                 // alias / union
+```
+Use `interface` for object shapes you may extend/merge; `type` for unions, primitives, and complex
+compositions. Both are structural — compatibility is by shape, not name.
+
+## Unions, narrowing & guards
+
+```ts
+type Shape = { kind: "circle"; r: number } | { kind: "square"; s: number };
+
+function area(sh: Shape): number {
+  switch (sh.kind) {            // discriminated union
+    case "circle": return Math.PI * sh.r ** 2;
+    case "square": return sh.s ** 2;
+  }
+}
+
+function isString(x: unknown): x is string {  // type guard
+  return typeof x === "string";
+}
+```
+
+## Generics
+
+Write reusable, type-safe code parameterized by type:
+```ts
+function first<T>(arr: T[]): T | undefined { return arr[0]; }
+interface ApiResult<T> { data: T; error: string | null }
+```
+
+## Utility types
+
+Built-ins transform existing types — no need to redeclare:
+```ts
+Partial<User>      // all properties optional
+Required<User>     // all required
+Pick<User, "id">   // subset
+Omit<User, "email">// remove keys
+Record<string, number>  // dictionary
+Readonly<User>
+```
+
+## any vs unknown vs never
+
+- **`any`** — opt out of checking (avoid).
+- **`unknown`** — safe `any`: you must narrow before use.
+- **`never`** — impossible value (exhaustiveness checks, functions that throw).
+
+These tools let you model real APIs precisely, so the compiler catches mismatches before runtime.

@@ -1,0 +1,49 @@
+---
+title: "Dynamic Programming"
+level: BEGINNER
+order: 1
+---
+
+# Dynamic Programming (DP)
+
+**DP** solves problems by breaking them into overlapping subproblems and **storing** each
+subproblem's answer so it's computed only once. It's recursion + memory.
+
+## Two signals you need DP
+
+1. **Optimal substructure** — the answer is built from answers to smaller subproblems.
+2. **Overlapping subproblems** — the same subproblem is solved repeatedly (plain recursion would
+   recompute it exponentially).
+
+## Two styles
+
+**Top-down (memoization)** — recursion + a cache:
+```python
+from functools import lru_cache
+@lru_cache(None)
+def fib(n):
+    if n < 2: return n
+    return fib(n-1) + fib(n-2)     # each n computed once -> O(n)
+```
+
+**Bottom-up (tabulation)** — fill a table iteratively:
+```python
+def fib(n):
+    dp = [0, 1]
+    for i in range(2, n + 1):
+        dp.append(dp[i-1] + dp[i-2])
+    return dp[n]
+```
+
+## How to design a DP
+
+1. Define the **state** (what `dp[i]` means).
+2. Write the **recurrence** (how states relate).
+3. Set the **base cases**.
+4. Decide the **iteration order**, then optionally optimize space.
+
+## Classic problems
+
+Climbing stairs, house robber, coin change, longest common subsequence, edit distance, 0/1
+knapsack, longest increasing subsequence, unique paths. DP is the most feared interview topic —
+the key is naming the state precisely. It's the answer when **greedy fails**.

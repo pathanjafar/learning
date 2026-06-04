@@ -1,0 +1,63 @@
+---
+title: "Data Types, JSONB, Window Functions & CTEs"
+level: INTERMEDIATE
+order: 2
+---
+
+# Postgres Types & Power Features
+
+## Rich data types
+
+Beyond standard SQL types, Postgres adds:
+```sql
+CREATE TABLE events (
+  id     SERIAL PRIMARY KEY,          -- auto-increment
+  uid    UUID DEFAULT gen_random_uuid(),
+  tags   TEXT[],                      -- array
+  data   JSONB,                       -- binary JSON, indexable
+  period TSRANGE,                     -- range type
+  at     TIMESTAMPTZ DEFAULT now()
+);
+```
+Numeric (`INTEGER`, `NUMERIC`, `SERIAL`), text (`VARCHAR`, `TEXT`), `BOOLEAN`, date/time, `UUID`,
+arrays, ranges, and **JSON/JSONB**.
+
+## JSONB
+
+Store and query semi-structured data:
+```sql
+SELECT data->>'theme' AS theme          -- ->> returns text, -> returns json
+FROM users
+WHERE data @> '{"active": true}';       -- containment
+CREATE INDEX idx_data ON users USING GIN (data);   -- index JSONB
+```
+Prefer **JSONB** (binary, indexable) over `JSON` (raw text) for querying.
+
+## Window functions
+
+Compute across a set of rows **without collapsing** them (unlike GROUP BY):
+```sql
+SELECT name, dept, salary,
+       RANK() OVER (PARTITION BY dept ORDER BY salary DESC) AS rank_in_dept,
+       LAG(salary) OVER (ORDER BY hired_at) AS prev_salary
+FROM employees;
+```
+`ROW_NUMBER`, `RANK`, `DENSE_RANK`, `LAG`, `LEAD`, running totals — essential for analytics.
+
+## Common Table Expressions (CTEs)
+
+```sql
+WITH paid AS (
+  SELECT user_id, SUM(total) AS spent FROM orders WHERE paid GROUP BY user_id
+)
+SELECT u.name, p.spent FROM users u JOIN paid p ON p.user_id = u.id;
+
+-- recursive CTE (hierarchies)
+WITH RECURSIVE tree AS (
+  SELECT id, parent_id FROM nodes WHERE parent_id IS NULL
+  UNION ALL
+  SELECT n.id, n.parent_id FROM nodes n JOIN tree t ON n.parent_id = t.id
+)
+SELECT * FROM tree;
+```
+CTEs make complex queries readable and enable recursion (org charts, graphs).

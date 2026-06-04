@@ -1,0 +1,56 @@
+---
+title: "Production PM2: Boot Persistence, Zero-Downtime & vs Docker"
+level: ADVANCED
+order: 3
+---
+
+# PM2 in Production
+
+## Survive server reboots
+
+```bash
+pm2 start ecosystem.config.js --env production
+pm2 save                           # snapshot the current process list
+pm2 startup                        # generate & install a systemd boot script
+```
+After this, PM2 (and your apps) come back automatically after a reboot.
+
+## Zero-downtime reloads
+
+```bash
+pm2 reload api                     # graceful: restart workers one by one
+```
+Unlike `restart` (kills then starts — brief downtime), `reload` in cluster mode keeps serving from
+old workers until new ones are ready. Pair with graceful shutdown in your app:
+```js
+process.on("SIGINT", async () => { await server.close(); process.exit(0); });
+```
+
+## Log rotation
+
+Logs grow unbounded otherwise:
+```bash
+pm2 install pm2-logrotate
+pm2 set pm2-logrotate:max_size 10M
+pm2 set pm2-logrotate:retain 7
+```
+
+## PM2 vs Docker vs systemd
+
+These overlap — pick based on your deployment model:
+- **PM2** — great when running Node **directly on a VM/VPS**: clustering, reloads, logs, monit.
+- **Docker / Kubernetes** — the **container** runtime handles restarts and scaling; running PM2
+  *inside* a container is usually redundant (one process per container is the norm). Use PM2 in a
+  container only if you specifically want in-container cluster mode.
+- **systemd** — OS-level service management if you don't want PM2.
+
+> This platform deploys all-Docker, so it relies on Docker restart policies rather than PM2 — a
+> deliberate "pick one" decision. PM2 shines in the non-containerized VPS workflow.
+
+## Typical VPS deploy
+
+```bash
+git pull && npm ci && npm run build
+pm2 reload ecosystem.config.js --env production
+```
+Put Nginx in front for TLS + reverse proxy, and you have a production Node deployment.

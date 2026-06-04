@@ -1,0 +1,61 @@
+---
+title: "Tree DFS/BFS Patterns & Construction"
+level: INTERMEDIATE
+order: 2
+---
+
+# Tree Patterns
+
+Almost every tree problem is a traversal plus a little bookkeeping. Learn the shapes.
+
+## Bottom-up DFS (return info up)
+
+Compute a value for each subtree and combine at the parent. Great for height, diameter, balance,
+and "max path."
+```python
+def height(node):
+    if not node: return 0
+    l = height(node.left)
+    r = height(node.right)
+    return 1 + max(l, r)          # combine children
+```
+Diameter: track `l + r` as a side effect while returning height.
+
+## Top-down DFS (carry info down)
+
+Pass accumulated state into children. Good for path sums and depth-aware logic.
+```python
+def paths(node, total):
+    if not node: return
+    total += node.val
+    if is_leaf(node): record(total)
+    paths(node.left, total); paths(node.right, total)
+```
+
+## BFS / level order
+
+Use a queue; process one level per outer iteration.
+```python
+from collections import deque
+q = deque([root])
+while q:
+    level = []
+    for _ in range(len(q)):       # exactly one level
+        node = q.popleft()
+        level.append(node.val)
+        for c in (node.left, node.right):
+            if c: q.append(c)
+```
+Powers: level order, zigzag, right-side view, min depth.
+
+## Construction & serialization
+
+Build a tree from **preorder + inorder** (preorder gives the root; inorder splits left/right). For
+**serialize/deserialize**, preorder with explicit null markers reconstructs uniquely.
+
+## Lowest common ancestor
+
+Recurse; if a node is found in both subtrees, the current node is the LCA.
+
+**Recognition cue:** "for each node compute X from its subtrees" → bottom-up DFS; "process by
+depth/level" → BFS.

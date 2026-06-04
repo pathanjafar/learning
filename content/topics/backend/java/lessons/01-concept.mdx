@@ -1,0 +1,58 @@
+---
+title: "Java fundamentals"
+level: BEGINNER
+order: 1
+---
+
+# Java
+
+**Java** is a statically typed, object-oriented language that runs on the **JVM** (Java Virtual
+Machine), giving "write once, run anywhere" portability. It powers large-scale enterprise backends
+and Android apps.
+
+## Structure
+
+Everything lives in classes; execution starts at `main`:
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        String name = "Ada";
+        System.out.println("Hi " + name);
+    }
+}
+```
+
+## Static typing
+
+Types are declared and checked at compile time:
+```java
+int age = 36;
+List<String> names = new ArrayList<>();
+names.add("Ada");
+```
+
+## Object-oriented core
+
+```java
+class User {
+    private String name;
+    User(String name) { this.name = name; }
+    String greet() { return "Hi " + this.name; }
+}
+```
+
+Pillars: encapsulation, inheritance, polymorphism, abstraction. Interfaces define contracts;
+generics (`List<T>`) provide type-safe containers.
+
+## The ecosystem
+
+- **Spring Boot** — the dominant backend framework for REST APIs
+- **Maven/Gradle** — build & dependency management
+- Strong concurrency support (threads, executors), JIT-compiled performance
+
+## Why Java
+
+Performance, mature tooling, massive ecosystem, and strong typing make it a staple for big
+systems. More verbose than Python/JS, but predictable and fast. (In this platform, Java is one of
+the languages learners solve DSA problems in.)

@@ -1,0 +1,52 @@
+---
+title: "Hooks & State Management"
+level: INTERMEDIATE
+order: 2
+---
+
+# Hooks & State Management
+
+## The essential hooks
+
+```jsx
+const [count, setCount] = useState(0);              // local state
+
+useEffect(() => {                                    // side effects
+  const id = setInterval(tick, 1000);
+  return () => clearInterval(id);                    // cleanup on unmount
+}, [deps]);                                          // re-run when deps change
+
+const value = useContext(ThemeContext);              // read context
+const [state, dispatch] = useReducer(reducer, init); // complex state logic
+const memoized = useMemo(() => expensive(a), [a]);   // cache a value
+const stable = useCallback(() => doThing(a), [a]);   // cache a function
+const ref = useRef(null);                            // DOM node / mutable box
+```
+
+**Rules of hooks:** call them only at the top level (never in loops/conditions) and only from
+React functions. The dependency array tells React when to re-run/re-create.
+
+## Custom hooks
+
+Extract reusable stateful logic into a function starting with `use`:
+
+```jsx
+function useLocalStorage(key, initial) {
+  const [val, setVal] = useState(() => JSON.parse(localStorage.getItem(key)) ?? initial);
+  useEffect(() => localStorage.setItem(key, JSON.stringify(val)), [key, val]);
+  return [val, setVal];
+}
+```
+Common ones: `useFetch`, `useDebounce`, `useThrottle`, `useToggle`.
+
+## State management — choosing the right scope
+
+1. **Local state** (`useState`) — lives in one component.
+2. **Lift state up** — move it to the closest common parent and pass via props.
+3. **Context** (`useContext`) — avoid prop-drilling for app-wide values (theme, user). Best for
+   low-frequency updates.
+4. **External store** — **Redux** (actions → reducers → store, with selectors; Thunk/Saga for
+   async) or lighter libraries like **Zustand**/**Jotai** for larger apps with frequent updates.
+
+Reach for the simplest tool that fits; don't add Redux until prop-drilling and context actually
+hurt.

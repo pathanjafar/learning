@@ -1,0 +1,50 @@
+---
+title: "Stacks & Queues"
+level: BEGINNER
+order: 1
+---
+
+# Stacks & Queues
+
+Two linear structures distinguished by **which end** you add to and remove from.
+
+## Stack — LIFO (Last In, First Out)
+
+Push and pop from the same end. Think of a stack of plates.
+
+```python
+stack = []
+stack.append(x)   # push
+top = stack.pop() # remove most recent
+```
+
+Used in: matching brackets, undo, function call stack, expression evaluation, monotonic-stack
+problems (next greater element), DFS (iterative).
+
+## Queue — FIFO (First In, First Out)
+
+Add at the back, remove from the front. Think of a line of people.
+
+```python
+from collections import deque
+q = deque()
+q.append(x)       # enqueue (back)
+front = q.popleft()  # dequeue (front)  -- O(1)
+```
+
+> Use `deque`, not a list, for queues — `list.pop(0)` is O(n).
+
+Used in: BFS, level-order tree traversal, task scheduling, caching.
+
+## Java equivalents
+
+```java
+Deque<Integer> stack = new ArrayDeque<>();  stack.push(x); stack.pop();
+Queue<Integer> queue = new ArrayDeque<>();  queue.offer(x); queue.poll();
+```
+
+## Cost
+
+Both give **O(1)** push/pop (enqueue/dequeue). The power is the *ordering discipline* — many
+problems become simple once you pick the right one (e.g. brackets → stack, shortest path on an
+unweighted graph → queue).

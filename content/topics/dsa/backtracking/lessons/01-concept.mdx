@@ -1,0 +1,57 @@
+---
+title: "Backtracking"
+level: BEGINNER
+order: 1
+---
+
+# Backtracking
+
+**Backtracking** explores all candidate solutions by building them incrementally and **abandoning**
+a partial candidate ("backtracking") as soon as it can't lead to a valid full solution. It's a
+refined brute force.
+
+## The template
+
+```python
+def backtrack(path, choices):
+    if is_complete(path):
+        result.append(path[:])     # record a copy
+        return
+    for choice in choices:
+        if not valid(choice, path):
+            continue
+        path.append(choice)        # 1. choose
+        backtrack(path, next_choices(choice))  # 2. explore
+        path.pop()                 # 3. un-choose (backtrack)
+```
+
+The **choose → explore → un-choose** pattern is the heart of every backtracking solution.
+
+## Example: permutations
+
+```python
+def permute(nums):
+    res = []
+    def bt(path, remaining):
+        if not remaining:
+            res.append(path[:]); return
+        for i in range(len(remaining)):
+            path.append(remaining[i])
+            bt(path, remaining[:i] + remaining[i+1:])
+            path.pop()
+    bt([], nums)
+    return res
+```
+
+## When to use it
+
+The problem asks for **all** combinations/permutations/subsets, or to find **a** valid
+configuration under constraints:
+
+- Subsets, permutations, combinations
+- N-Queens, Sudoku solver
+- Word search, generate parentheses
+- Palindrome partitioning
+
+**Pruning** (skipping invalid branches early) is what makes backtracking practical versus naive
+brute force. Time is often exponential — backtracking just explores it as efficiently as possible.

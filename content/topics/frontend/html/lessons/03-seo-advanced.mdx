@@ -1,0 +1,53 @@
+---
+title: "SEO, Meta Tags & Advanced HTML"
+level: ADVANCED
+order: 3
+---
+
+# SEO & Advanced HTML
+
+## Meta tags & SEO
+
+The `<head>` describes your page to browsers, search engines, and social platforms.
+
+```html
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reborn — Learn to Code</title>
+  <meta name="description" content="Structured lessons and graded practice." />
+
+  <!-- Open Graph (Facebook, LinkedIn) -->
+  <meta property="og:title" content="Reborn" />
+  <meta property="og:description" content="Learn to code and DSA." />
+  <meta property="og:image" content="https://example.com/preview.png" />
+
+  <!-- Twitter card -->
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Canonical: the preferred URL when duplicates exist -->
+  <link rel="canonical" href="https://example.com/page" />
+</head>
+```
+
+- **`description`** drives the search-result snippet (keywords meta is ignored by Google).
+- **Open Graph / Twitter cards** control the preview when a link is shared.
+- **Canonical URLs** prevent duplicate-content penalties.
+- **`robots.txt`** tells crawlers what to skip; a **sitemap.xml** lists URLs to index.
+
+## Advanced HTML
+
+**Data attributes** attach custom data to elements, readable from JS:
+```html
+<button data-id="42" data-action="delete">Delete</button>
+<script>el.dataset.id // "42"</script>
+```
+
+**`<template>`** holds inert markup you clone with JS — not rendered until used:
+```html
+<template id="row"><tr><td></td></tr></template>
+```
+
+**Web Components** let you define reusable custom elements with encapsulated styles via the
+Shadow DOM (`customElements.define('my-card', class extends HTMLElement {...})`) — the browser-native
+component model that frameworks like React abstract over.

@@ -1,0 +1,10 @@
+slug: two-sum
+title: Two Sum
+difficulty: easy
+ioMode: function
+languages:
+  - python
+  - java
+hints:
+  - "Brute force is O(n²). Can a hash map remember what you've seen?"
+  - "For each number, check whether its complement (target - n) was already seen."

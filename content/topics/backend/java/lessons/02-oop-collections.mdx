@@ -1,0 +1,65 @@
+---
+title: "OOP, Collections, Generics & Streams"
+level: INTERMEDIATE
+order: 2
+---
+
+# OOP, Collections & Streams
+
+## OOP in depth
+
+```java
+interface Shape { double area(); }              // contract
+
+abstract class Base implements Shape {           // partial implementation
+    protected String name;
+    Base(String name) { this.name = name; }
+}
+
+class Circle extends Base {
+    private final double r;
+    Circle(double r) { super("circle"); this.r = r; }
+    @Override public double area() { return Math.PI * r * r; }  // polymorphism
+}
+```
+
+- **Interface vs abstract class:** interfaces declare capability (a class can implement many);
+  abstract classes share state/implementation (single inheritance).
+- **The `equals`/`hashCode` contract:** override both together, or hash-based collections break.
+- **`==`** compares references; **`.equals()`** compares values.
+
+## Collections framework
+
+```java
+List<String> list = new ArrayList<>();          // indexed, resizable
+Map<String,Integer> map = new HashMap<>();       // key→value, O(1)
+Set<Integer> set = new HashSet<>();              // unique elements
+Deque<Integer> stack = new ArrayDeque<>();       // stack/queue
+```
+
+- **`ArrayList`** (fast random access) vs **`LinkedList`** (fast ends).
+- **`HashMap`/`HashSet`** (O(1), unordered) vs **`TreeMap`/`TreeSet`** (sorted, O(log n)).
+
+## Generics
+
+Type-safe containers and methods; the compiler enforces element types:
+```java
+<T> T first(List<T> items) { return items.get(0); }
+```
+Note **type erasure** — generics exist at compile time only.
+
+## Streams (functional style)
+
+```java
+int sum = orders.stream()
+    .filter(o -> o.isPaid())
+    .mapToInt(Order::getAmount)
+    .sum();
+```
+Declarative pipelines (`filter`, `map`, `collect`, `reduce`) over collections — cleaner than manual
+loops for transformations.
+
+## Exceptions
+
+**Checked** (must handle/declare, e.g. `IOException`) vs **unchecked** (`RuntimeException`). Use
+try/catch/finally or try-with-resources for cleanup.

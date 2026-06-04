@@ -1,0 +1,51 @@
+---
+title: "TypeScript: typed JavaScript"
+level: BEGINNER
+order: 1
+---
+
+# TypeScript
+
+**TypeScript** is JavaScript with a static type system. It compiles to plain JavaScript but
+catches type errors at **build time**, before your code runs — fewer bugs, better autocomplete.
+
+## Basic types
+
+```ts
+let name: string = "Ada";
+let age: number = 36;
+let active: boolean = true;
+let tags: string[] = ["a", "b"];
+```
+
+## Interfaces & types
+
+Describe the shape of objects:
+```ts
+interface User {
+  id: number;
+  name: string;
+  email?: string;   // optional
+}
+
+function greet(u: User): string {
+  return `Hi ${u.name}`;
+}
+```
+
+## Powerful features
+
+```ts
+type Status = "active" | "banned";    // union of literals
+type ID = string | number;            // union type
+function first<T>(arr: T[]): T { return arr[0]; }  // generics
+```
+
+## Why teams adopt it
+
+- **Catch errors early** — typos and wrong argument types fail the build, not production.
+- **Self-documenting** — types describe intent; editors give accurate autocomplete and refactors.
+- **Scales** — large codebases stay maintainable.
+
+TypeScript is a superset of JavaScript, so any valid JS is valid TS — you can adopt it gradually.
+It's the default for serious React and Node projects today.

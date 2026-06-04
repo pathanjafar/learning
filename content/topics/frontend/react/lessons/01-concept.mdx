@@ -1,0 +1,56 @@
+---
+title: "React: building UIs with components"
+level: BEGINNER
+order: 1
+---
+
+# React
+
+**React** is a library for building user interfaces from reusable **components**. You describe what
+the UI should look like for a given state, and React efficiently updates the DOM when state changes.
+
+## Components & JSX
+
+A component is a function returning JSX (HTML-like syntax in JavaScript):
+
+```jsx
+function Greeting({ name }) {
+  return <h1>Hello, {name}!</h1>;
+}
+
+// use it: <Greeting name="Ada" />
+```
+
+`name` is a **prop** — data passed in from a parent. Props are read-only.
+
+## State & re-rendering
+
+State is data that changes over time. When it updates, React re-renders the component:
+
+```jsx
+import { useState } from "react";
+
+function Counter() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>Count: {count}</button>;
+}
+```
+
+## Effects — side effects after render
+
+```jsx
+import { useEffect } from "react";
+useEffect(() => {
+  document.title = `Count: ${count}`;
+}, [count]);   // re-run when count changes
+```
+
+## The core ideas
+
+- **Declarative** — describe the UI for a state; React handles DOM updates.
+- **Component composition** — build complex UIs from small pieces.
+- **Unidirectional data flow** — data flows down via props; events flow up via callbacks.
+- **Hooks** (`useState`, `useEffect`, `useContext`, custom hooks) add behavior to function
+  components.
+
+React is the foundation for Next.js (the next topic), which adds routing and server rendering.

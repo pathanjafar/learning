@@ -1,0 +1,48 @@
+---
+title: "Two Pointers"
+level: BEGINNER
+order: 1
+---
+
+# Two Pointers
+
+The **two-pointer** technique uses two indices that move through a sequence, replacing a nested
+O(n²) loop with a single O(n) pass. It comes in two flavors.
+
+## 1. Opposite ends (converging)
+
+Pointers start at both ends and move toward each other. Ideal for **sorted** arrays.
+
+```python
+def two_sum_sorted(a, target):
+    l, r = 0, len(a) - 1
+    while l < r:
+        s = a[l] + a[r]
+        if s == target: return [l, r]
+        if s < target: l += 1     # need bigger -> move left up
+        else: r -= 1              # need smaller -> move right down
+    return []
+```
+
+Used in: pair-with-target, reverse-in-place, container-with-most-water, trapping rain water.
+
+## 2. Same direction (fast/slow)
+
+Both move forward at different speeds — a **read** pointer scans while a **write** pointer marks
+the next valid slot.
+
+```python
+def remove_dupes(a):           # a is sorted
+    w = 0
+    for r in range(len(a)):
+        if r == 0 or a[r] != a[r-1]:
+            a[w] = a[r]; w += 1
+    return w                    # new length
+```
+
+Used in: remove duplicates, move zeroes, cycle detection (Floyd's tortoise & hare).
+
+## Why it works
+
+Each pointer only moves forward, so total work is O(n) with **O(1) extra space**. The key
+prerequisite for the converging variant is usually that the data is **sorted**.

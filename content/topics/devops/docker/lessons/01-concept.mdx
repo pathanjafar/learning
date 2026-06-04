@@ -1,0 +1,64 @@
+---
+title: "Docker: containers explained"
+level: BEGINNER
+order: 1
+---
+
+# Docker
+
+**Docker** packages an app with all its dependencies into a **container** — a lightweight,
+isolated unit that runs the same everywhere. No more "works on my machine." (This entire platform
+runs as Docker containers.)
+
+## Image vs container
+
+- **Image** — a read-only blueprint (your app + runtime + libraries).
+- **Container** — a running instance of an image.
+
+## The Dockerfile
+
+A recipe to build an image:
+
+```dockerfile
+FROM node:20-slim
+WORKDIR /app
+COPY package.json .
+RUN npm install
+COPY . .
+EXPOSE 3000
+CMD ["node", "server.js"]
+```
+
+```bash
+docker build -t myapp .       # build the image
+docker run -p 3000:3000 myapp # run a container
+```
+
+## docker-compose — multi-service apps
+
+Define several services (app, database, cache) in one file:
+
+```yaml
+services:
+  web:
+    build: .
+    ports: ["3000:3000"]
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: secret
+```
+
+```bash
+docker compose up -d    # start everything
+```
+
+## Why it matters
+
+- **Consistency** — same environment in dev, CI, and production.
+- **Isolation** — services don't interfere; easy to run many versions.
+- **Portability** — ship the image anywhere Docker runs.
+
+Key concepts: images, containers, volumes (persistent data), networks (service-to-service), and
+registries (Docker Hub). Docker is the foundation of modern deployment — and pairs with Nginx and
+process managers like PM2.

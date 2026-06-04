@@ -1,0 +1,51 @@
+---
+title: "Rendering Strategies & Data Fetching"
+level: INTERMEDIATE
+order: 2
+---
+
+# Rendering & Data Fetching
+
+## Server vs Client Components (App Router)
+
+By default, components in `app/` are **Server Components** — they render on the server, can be
+`async`, fetch data directly, and ship **zero JS** to the browser. Opt into interactivity with
+`"use client"`.
+
+```tsx
+// Server Component (default) — runs on the server
+export default async function Page() {
+  const posts = await fetch("https://api/posts").then(r => r.json());
+  return <PostList posts={posts} />;
+}
+```
+```tsx
+"use client";                 // Client Component — has state/effects/handlers
+import { useState } from "react";
+export default function Counter() { const [n, setN] = useState(0); /* ... */ }
+```
+
+Keep interactive bits as small client "islands"; keep data-fetching and static content on the
+server.
+
+## Rendering strategies
+
+| Strategy | When it renders | Use for |
+|----------|-----------------|---------|
+| **Static (SSG)** | build time | marketing, docs, blogs |
+| **Server (SSR)** | each request | personalized/fresh pages |
+| **ISR** | rebuilt on an interval / on-demand | mostly-static with updates |
+| **Client** | in the browser | dashboards behind auth |
+
+In the App Router these are controlled by `fetch` caching and route segment options
+(`export const revalidate = 60`, `dynamic = "force-dynamic"`).
+
+## Data fetching
+
+- **App Router:** just `await fetch(...)` in a Server Component. Next caches and dedupes requests;
+  `revalidate` enables ISR.
+- **Pages Router (legacy):** `getStaticProps` (SSG), `getServerSideProps` (SSR).
+- **Client-side:** **SWR** or **React Query** for caching, revalidation, and mutations.
+
+The mental model: fetch on the server when you can (faster, SEO-friendly), on the client only when
+data depends on the user's session/interactions.

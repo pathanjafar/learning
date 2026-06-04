@@ -1,0 +1,10 @@
+slug: product-except-self
+title: Product of Array Except Self
+difficulty: medium
+ioMode: function
+languages:
+  - python
+  - java
+hints:
+  - "result[i] = (product of everything left of i) * (product of everything right of i)."
+  - "Do a left-to-right prefix pass, then a right-to-left suffix pass. No division needed."

@@ -1,0 +1,53 @@
+---
+title: "JavaScript fundamentals"
+level: BEGINNER
+order: 1
+---
+
+# JavaScript
+
+**JavaScript** is the programming language of the web — it runs in every browser and (via Node.js)
+on servers. It's dynamically typed and multi-paradigm.
+
+## Variables & types
+
+```js
+const name = "Ada";    // can't be reassigned
+let count = 0;         // can be reassigned
+// types: string, number, boolean, null, undefined, object, symbol, bigint
+```
+
+Prefer `const`; use `let` only when you must reassign. Avoid `var`.
+
+## Functions
+
+```js
+const add = (a, b) => a + b;          // arrow function
+function greet(name) { return `Hi ${name}`; }  // template literal
+```
+
+## Working with data
+
+Arrays and objects plus the higher-order methods you'll use constantly:
+```js
+const nums = [1, 2, 3, 4];
+nums.map(n => n * 2);        // [2,4,6,8]
+nums.filter(n => n % 2);     // [1,3]
+nums.reduce((a, n) => a + n, 0);  // 10
+```
+
+## Async: callbacks → promises → async/await
+
+```js
+async function load() {
+  const res = await fetch("/api/data");
+  const data = await res.json();
+  return data;
+}
+```
+
+## Key concepts to know
+
+Scope & closures, the event loop (single-threaded, non-blocking), `this` binding, destructuring,
+spread/rest (`...`), and the DOM API for manipulating page elements. JavaScript is the foundation
+for TypeScript, React, and Node — master it first.

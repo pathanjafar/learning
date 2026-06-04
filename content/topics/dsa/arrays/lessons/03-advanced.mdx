@@ -1,0 +1,40 @@
+---
+title: "Advanced: Kadane's algorithm & the water trap"
+level: ADVANCED
+order: 3
+---
+
+# Two classic array algorithms
+
+## Kadane's algorithm (maximum subarray)
+
+The maximum-sum contiguous subarray in O(n). At each index, the best subarray ending here is
+either *just this element* or *this element extended onto the previous best*:
+
+```python
+best = cur = nums[0]
+for n in nums[1:]:
+    cur = max(n, cur + n)   # extend or restart
+    best = max(best, cur)
+```
+
+Why it works: any optimal subarray ends at some index `i`; `cur` always holds the best subarray
+ending at `i`, so the global `best` sees every candidate.
+
+## Trapping rain water (two pointers)
+
+Water above each bar = `min(maxLeft, maxRight) - height`. Instead of precomputing both arrays,
+two pointers track the running maxes from each side and always advance the **smaller** side —
+because the smaller wall is what bounds the water there:
+
+```python
+l, r = 0, len(h) - 1
+lmax, rmax, water = h[l], h[r], 0
+while l < r:
+    if lmax < rmax:
+        l += 1; lmax = max(lmax, h[l]); water += lmax - h[l]
+    else:
+        r -= 1; rmax = max(rmax, h[r]); water += rmax - h[r]
+```
+
+O(n) time, O(1) space. Solve both as graded problems in this topic.

@@ -1,0 +1,57 @@
+---
+title: "Layout, Variants & Dark Mode"
+level: INTERMEDIATE
+order: 2
+---
+
+# Layout Utilities, Variants & Dark Mode
+
+## Layout utilities
+
+Tailwind maps CSS layout to utility classes:
+
+```html
+<!-- Flexbox -->
+<div class="flex items-center justify-between gap-4">…</div>
+
+<!-- Grid -->
+<div class="grid grid-cols-3 gap-4">…</div>
+
+<!-- Positioning & sizing -->
+<div class="relative w-full max-w-md h-screen z-10">…</div>
+```
+
+`flex`, `grid`, `grid-cols-*`, `items-*`, `justify-*`, `gap-*`, `w-*`, `h-*`, `absolute`,
+`fixed`, `sticky`, `z-*` — the same CSS concepts, composed inline.
+
+## Variants — state and responsive
+
+Prefix a utility to apply it conditionally:
+
+```html
+<button class="bg-indigo-600 hover:bg-indigo-700 focus:ring-2 active:scale-95
+               md:px-6 lg:text-lg">
+  Click
+</button>
+```
+
+- **Responsive:** `sm:` `md:` `lg:` `xl:` `2xl:` (min-width, mobile-first).
+- **State:** `hover:` `focus:` `active:` `disabled:`.
+- **Group:** `group` on a parent + `group-hover:` on children to react to parent hover.
+
+## Dark mode
+
+Enable `darkMode: "class"` in the config, toggle a `dark` class on `<html>`, then prefix:
+
+```html
+<div class="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">…</div>
+```
+
+```js
+// toggle
+document.documentElement.classList.toggle("dark");
+```
+
+You can also use `darkMode: "media"` to follow the OS preference automatically. This combination
+of utilities + variants is how you build a full responsive, themeable UI without leaving your
+markup.

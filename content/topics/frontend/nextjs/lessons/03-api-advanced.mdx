@@ -1,0 +1,59 @@
+---
+title: "API Routes, Middleware, SEO & Deployment"
+level: ADVANCED
+order: 3
+---
+
+# Full-Stack Next.js & Production
+
+## API routes
+
+Backend endpoints live beside your pages:
+
+```ts
+// app/api/users/route.ts
+export async function GET()  { return Response.json(await db.user.findMany()); }
+export async function POST(req: Request) {
+  const body = await req.json();
+  const user = await db.user.create({ data: body });
+  return Response.json(user, { status: 201 });
+}
+```
+Dynamic routes: `app/api/users/[id]/route.ts`. Read env vars via `process.env` (prefix
+`NEXT_PUBLIC_` to expose to the browser).
+
+## Middleware
+
+`middleware.ts` runs before a request completes — ideal for auth gating, redirects, and rewrites:
+```ts
+export function middleware(req) {
+  if (!req.cookies.get("token")) return NextResponse.redirect(new URL("/login", req.url));
+}
+export const config = { matcher: ["/dashboard/:path*"] };
+```
+
+## Metadata & SEO
+
+```tsx
+export async function generateMetadata({ params }): Promise<Metadata> {
+  const post = await getPost(params.slug);
+  return { title: post.title, openGraph: { images: [post.cover] } };
+}
+```
+Dynamic, per-route metadata + structured data (Schema.org) make pages share and rank well.
+
+## Optimization
+
+- **`next/image`** — automatic resizing, lazy loading, and modern formats (WebP/AVIF).
+- **`next/font`** — self-host Google/local fonts with zero layout shift.
+
+## Deployment
+
+- **Vercel** — zero-config (the makers of Next); or self-host with `next build && next start`
+  behind Nginx, or in Docker (as this platform does).
+- Configure env vars per environment; add CI/CD and performance monitoring.
+
+## Advanced
+
+Internationalization (i18n routing), authentication with **NextAuth.js**, database access via
+**Prisma** (this app uses both patterns), and real-time features over WebSockets.

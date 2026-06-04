@@ -1,0 +1,54 @@
+---
+title: "Greedy Patterns & Proving Correctness"
+level: INTERMEDIATE
+order: 2
+---
+
+# Greedy Patterns & Proofs
+
+Greedy is fast and simple — *when it's correct*. The skill is recognizing which problems allow it
+and proving the local choice is safe.
+
+## Pattern 1: sort, then sweep
+
+Most greedy problems start by sorting on the right key.
+```python
+# Interval scheduling: keep the most non-overlapping intervals
+intervals.sort(key=lambda x: x[1])    # by END time
+count = 0; end = float("-inf")
+for s, e in intervals:
+    if s >= end:                      # take earliest-finishing that fits
+        count += 1; end = e
+```
+Sorting by **end time** is provably optimal here — finishing early leaves the most room.
+
+## Pattern 2: reach / frontier tracking
+
+```python
+# Jump Game: can we reach the end?
+reach = 0
+for i, jump in enumerate(nums):
+    if i > reach: return False        # stuck
+    reach = max(reach, i + jump)
+return True
+```
+
+## Pattern 3: exchange argument (the proof)
+
+To prove greedy is optimal, show any optimal solution can be transformed into the greedy one
+without getting worse — swap a non-greedy choice for the greedy choice and argue the result is at
+least as good. If you can't, greedy is probably wrong.
+
+## When greedy FAILS → use DP
+
+Coin change with arbitrary denominations: greedy (largest coin first) can miss the optimum
+(`coins=[1,3,4], amount=6` → greedy 4+1+1=3 coins, optimal 3+3=2). Whenever a locally best choice
+can block a better global outcome, switch to **Dynamic Programming**.
+
+## Greedy + stack
+
+"Remove K digits to make the smallest number" / "remove duplicate letters" greedily pop larger
+preceding characters using a monotonic stack.
+
+**Recognition cue:** "maximum/minimum number of …", intervals, or "can you reach/cover …" — try
+greedy, then sanity-check with a counterexample before trusting it.

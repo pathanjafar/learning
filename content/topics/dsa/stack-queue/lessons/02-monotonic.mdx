@@ -1,0 +1,54 @@
+---
+title: "Monotonic Stack & Deque Patterns"
+level: ADVANCED
+order: 2
+---
+
+# Monotonic Stack & Deque Patterns
+
+## Monotonic stack
+
+A stack kept in sorted (increasing or decreasing) order. Popping while the order would break lets
+you answer **"next greater/smaller element"** problems in O(n).
+
+```python
+# Next greater element to the right
+res = [-1] * len(nums)
+stack = []                       # holds indices, values decreasing
+for i, n in enumerate(nums):
+    while stack and nums[stack[-1]] < n:
+        res[stack.pop()] = n     # n is the next greater for popped index
+    stack.append(i)
+return res
+```
+
+Each index is pushed and popped once → **O(n)**. Powers: daily temperatures, next greater element,
+largest rectangle in histogram, trapping rain water.
+
+## Largest rectangle in histogram (classic)
+
+Maintain an increasing stack of bar indices; when a shorter bar appears, pop and compute the area
+each popped bar can span. O(n) versus the O(n²) brute force.
+
+## Monotonic deque — sliding window maximum
+
+A double-ended queue keeps candidates in decreasing order so the front is always the window max.
+```python
+from collections import deque
+dq = deque()                     # indices, values decreasing
+res = []
+for i, n in enumerate(nums):
+    while dq and nums[dq[-1]] < n: dq.pop()      # drop smaller
+    dq.append(i)
+    if dq[0] == i - k: dq.popleft()              # drop out-of-window
+    if i >= k - 1: res.append(nums[dq[0]])
+```
+O(n) instead of O(n·k).
+
+## Expression & nesting via stack
+
+Stacks evaluate RPN, decode nested strings (`3[a2[c]]`), and match parentheses — anything with
+nested/last-in-first-out structure.
+
+**Recognition cue:** "next greater/smaller," "previous smaller," histogram/area, or window
+max/min → monotonic stack/deque.

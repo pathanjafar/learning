@@ -1,0 +1,46 @@
+---
+title: "Binary Search Trees"
+level: BEGINNER
+order: 1
+---
+
+# Binary Search Trees (BST)
+
+A **BST** is a binary tree with an ordering invariant: for every node, all values in the **left**
+subtree are smaller and all values in the **right** subtree are larger.
+
+```
+        8
+       / \
+      3   10
+     / \    \
+    1   6    14
+```
+
+## Why it matters
+
+The invariant lets you discard half the tree at each step — search, insert, and delete are
+**O(h)**, where `h` is the height (O(log n) when balanced).
+
+```python
+def search(node, target):
+    while node:
+        if target == node.val: return node
+        node = node.left if target < node.val else node.right
+    return None
+```
+
+## Key properties
+
+- **Inorder traversal of a BST yields sorted values** — the most-used BST fact in interviews.
+- Insert walks down to a leaf position following the invariant.
+- Delete has three cases: leaf, one child, two children (replace with inorder successor).
+
+## The balance problem
+
+Inserting sorted data into a plain BST degrades it into a linked list → O(n). **Self-balancing**
+variants (AVL, Red-Black trees) rotate to keep height O(log n); Java's `TreeMap`/`TreeSet` and
+C++'s `std::map` are red-black trees.
+
+Used in: validate BST, kth smallest element, range queries, insert/delete, lowest common ancestor
+in a BST (use the ordering to descend directly).

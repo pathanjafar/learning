@@ -1,0 +1,61 @@
+---
+title: "Web Frameworks, APIs, Async & Deployment"
+level: ADVANCED
+order: 3
+---
+
+# Web Frameworks, APIs & Production
+
+## Web frameworks
+
+**Flask** (micro, explicit):
+```python
+from flask import Flask, request, jsonify
+app = Flask(__name__)
+
+@app.route("/users", methods=["POST"])
+def create():
+    data = request.get_json()
+    return jsonify(data), 201
+```
+Blueprints modularize larger Flask apps; Jinja2 renders templates.
+
+**Django** (batteries-included): project/apps structure, the **ORM** + models, views & URLs, the
+auto **admin** interface, built-in **auth**, middleware, and signals. Great for CRUD-heavy apps.
+
+**FastAPI** (modern, typed, async): Pydantic validation + automatic OpenAPI docs (this platform's
+grader uses it).
+
+## API development
+
+REST principles: resources as nouns, HTTP verbs (GET/POST/PUT/DELETE), correct **status codes**
+(200/201/400/401/404/500). Add **pagination**, **filtering/sorting**, auth, **rate limiting**, and
+**OpenAPI/Swagger** docs.
+
+## Database integration
+
+```python
+# SQLAlchemy ORM
+users = session.query(User).filter(User.active == True).all()
+```
+Define relationships (one-to-many, many-to-many), run **migrations** (Alembic/Django migrations),
+and use connection pooling.
+
+## Async programming
+
+```python
+import asyncio
+async def fetch(url):
+    async with session.get(url) as r:
+        return await r.json()
+results = await asyncio.gather(fetch(a), fetch(b))   # concurrent I/O
+```
+`asyncio` shines for I/O-bound concurrency; the **GIL** limits CPU-bound threading (use
+multiprocessing there).
+
+## Testing & deployment
+
+- **pytest** with fixtures and mocking; measure coverage.
+- Isolate deps in a **virtualenv**; pin in `requirements.txt`.
+- Serve via a WSGI/ASGI server (**Gunicorn**/**uvicorn**) behind **Nginx**, containerized with
+  Docker, deployed to a VPS or cloud.

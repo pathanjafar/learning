@@ -1,0 +1,4 @@
+track: TRACK_SLUG        # dsa | frontend | backend | databases | devops
+slug: TOPIC_SLUG         # unique within the track, e.g. strings, react, docker
+title: Human Readable Title
+order: 1

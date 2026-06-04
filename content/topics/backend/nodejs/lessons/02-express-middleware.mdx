@@ -1,0 +1,73 @@
+---
+title: "Core Modules, npm & Express"
+level: INTERMEDIATE
+order: 2
+---
+
+# Core Modules, npm & Express
+
+## Built-in core modules
+
+Node ships powerful modules — no install needed:
+
+```js
+import { readFile } from "node:fs/promises";  // file system
+import path from "node:path";                  // path utilities
+import { EventEmitter } from "node:events";    // pub/sub
+import http from "node:http";                  // low-level server
+
+const data = await readFile(path.join(import.meta.dirname, "data.json"), "utf8");
+```
+
+- **`fs`** — read/write files (prefer the promise API).
+- **`path`** — build cross-platform paths.
+- **`events`** — the `EventEmitter` pattern many APIs build on.
+- **`stream`** — process data in chunks (large files, network) without loading it all into memory.
+
+## npm & package.json
+
+```json
+{
+  "dependencies": { "express": "^4.21.0" },
+  "devDependencies": { "jest": "^29.0.0" },
+  "scripts": { "start": "node server.js", "dev": "node --watch server.js" }
+}
+```
+
+- **`dependencies`** ship to production; **`devDependencies`** are build/test only.
+- **Semver** (`^1.2.3`) controls allowed upgrades; **`package-lock.json`** pins exact versions for
+  reproducible installs.
+
+## Express — the standard web framework
+
+```js
+import express from "express";
+const app = express();
+app.use(express.json());                       // body parser middleware
+
+app.get("/users/:id", (req, res) => {          // route param
+  res.json({ id: req.params.id, q: req.query.sort });
+});
+app.post("/users", (req, res) => res.status(201).json(req.body));
+
+app.listen(4000);
+```
+
+## Middleware
+
+Middleware are functions with `(req, res, next)` that run in order on each request — the heart of
+Express:
+
+```js
+function logger(req, res, next) {
+  console.log(req.method, req.url);
+  next();                                       // pass control onward
+}
+app.use(logger);
+
+// error-handling middleware has 4 args:
+app.use((err, req, res, next) => res.status(500).json({ error: err.message }));
+```
+
+Use middleware for parsing, logging, CORS, auth, and validation — composable layers around your
+route handlers.

@@ -1,0 +1,56 @@
+---
+title: "Production Docker: Optimization, Security & Orchestration"
+level: ADVANCED
+order: 3
+---
+
+# Production Docker
+
+## Image optimization
+
+- Start from **slim/alpine** bases; use **multi-stage** builds.
+- Combine `RUN` steps and clean caches in the same layer (`apt-get ... && rm -rf /var/lib/apt/lists/*`).
+- Pin versions (`node:20.11-slim`) for reproducibility.
+- Inspect bloat with `docker history <image>` and tools like dive.
+
+## Security
+
+- **Don't run as root:** `USER node` in the image.
+- **Never bake secrets** into images — pass them via env vars / secrets at runtime.
+- Scan images for CVEs (`docker scout`, Trivy).
+- Use trusted, minimal base images; keep them updated.
+- Drop capabilities and use read-only filesystems where possible.
+
+## Health & resilience
+
+```yaml
+services:
+  api:
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 10s
+      retries: 3
+    restart: unless-stopped          # auto-recover on crash
+    deploy:
+      resources:
+        limits: { cpus: "1.0", memory: 512M }
+```
+Restart policies + healthchecks are how Docker (instead of PM2) keeps services alive.
+
+## Registries & CI/CD
+
+```bash
+docker build -t registry.example.com/app:1.2.3 .
+docker push registry.example.com/app:1.2.3
+```
+A CI pipeline builds, scans, pushes a tagged image, then the server pulls and restarts.
+
+## Orchestration (when one host isn't enough)
+
+- **Docker Compose** — single host, the simplest (this platform's target).
+- **Docker Swarm** — built-in clustering with `docker service`.
+- **Kubernetes** — industry-standard for scaling: pods, deployments, services, auto-healing, and
+  horizontal autoscaling across many nodes.
+
+> Note the **cgroup** gotcha for privileged workloads (like the Judge0 sandbox this app uses):
+> some kernels default to cgroup v2 and need configuration — a classic production surprise.

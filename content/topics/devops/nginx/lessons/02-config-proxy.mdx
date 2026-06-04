@@ -1,0 +1,64 @@
+---
+title: "Config Structure, Reverse Proxy & Load Balancing"
+level: INTERMEDIATE
+order: 2
+---
+
+# Nginx Configuration
+
+## Config structure
+
+Nginx config nests **contexts**: `http` → `server` (a virtual host) → `location` (a URL path).
+
+```nginx
+http {
+  server {
+    listen 80;
+    server_name example.com;
+
+    location / {
+      root /var/www/html;          # serve static files
+      index index.html;
+    }
+  }
+}
+```
+Reload changes without dropping connections: `nginx -s reload`.
+
+## Reverse proxy
+
+Forward requests to a backend app:
+```nginx
+location /api/ {
+  proxy_pass http://127.0.0.1:4000/;
+  proxy_set_header Host $host;
+  proxy_set_header X-Real-IP $remote_addr;
+  proxy_set_header X-Forwarded-Proto $scheme;
+}
+```
+The `X-Forwarded-*` headers let the backend know the original client/scheme.
+
+## Location matching precedence
+
+1. `= /exact` — exact match (highest priority)
+2. `^~ /prefix` — prefix, stop searching
+3. `~ regex` / `~* regex` — (case-insensitive) regex
+4. `/prefix` — plain prefix (lowest)
+
+Getting this order wrong is a common "why is the wrong block matching?" bug.
+
+## Load balancing
+
+```nginx
+upstream backend {
+  least_conn;                      # or round-robin (default), ip_hash
+  server 10.0.0.1:4000;
+  server 10.0.0.2:4000;
+}
+server { location / { proxy_pass http://backend; } }
+```
+Strategies: round-robin, `least_conn`, `ip_hash` (sticky sessions). Nginx also health-checks and
+removes dead upstreams.
+
+This is exactly the edge role Nginx plays in this platform: one public entry, routing `/` to the
+web app and `/api/` to the Node API, with Judge0 kept internal.

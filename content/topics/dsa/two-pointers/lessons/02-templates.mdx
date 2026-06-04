@@ -1,0 +1,61 @@
+---
+title: "Two-Pointer Variants & Templates"
+level: INTERMEDIATE
+order: 2
+---
+
+# Two-Pointer Templates
+
+Three concrete templates cover almost every two-pointer problem.
+
+## 1. Converging (sorted input)
+
+Move inward based on a comparison. The array **must be sorted**.
+```python
+l, r = 0, len(a) - 1
+while l < r:
+    s = a[l] + a[r]
+    if s == target: return [l, r]
+    if s < target: l += 1        # need larger
+    else:           r -= 1       # need smaller
+```
+Powers: Two Sum II, 3Sum (fix one, two-point the rest), container with most water.
+
+## 2. Fast/slow (in-place write pointer)
+
+A `write` pointer marks the next valid slot while `read` scans.
+```python
+write = 0
+for read in range(len(a)):
+    if keep(a[read]):
+        a[write] = a[read]
+        write += 1
+return write           # new length
+```
+Powers: remove duplicates, move zeroes, remove element.
+
+## 3. Fast/slow (cycle detection)
+
+Different speeds detect cycles and find midpoints (also used on linked lists).
+```python
+slow = fast = head
+while fast and fast.next:
+    slow = slow.next
+    fast = fast.next.next       # meet inside a cycle
+```
+
+## 3Sum — combining patterns
+
+```python
+a.sort()
+for i in range(len(a)):
+    if i and a[i] == a[i-1]: continue   # skip duplicates
+    l, r = i + 1, len(a) - 1
+    while l < r:
+        s = a[i] + a[l] + a[r]
+        if s == 0: ... ; l += 1; r -= 1
+        elif s < 0: l += 1
+        else: r -= 1
+```
+
+**Recognition cue:** sorted array + "find a pair/triplet," or "modify in place with O(1) space."

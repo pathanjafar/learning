@@ -1,0 +1,4 @@
+[
+  { "input": "SAMPLE_STDIN", "expected": "SAMPLE_STDOUT", "isHidden": false, "compareMode": "TRIMMED" },
+  { "input": "HIDDEN_STDIN", "expected": "HIDDEN_STDOUT", "isHidden": true, "compareMode": "TRIMMED" }
+]

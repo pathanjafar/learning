@@ -1,0 +1,10 @@
+---
+type: conceptual
+answer: |
+  Brute force checks every pair: O(n²) time, O(1) space. The hash-map approach scans once,
+  storing each value's index and checking for the complement (target - value) in O(1), giving
+  O(n) time and O(n) space. You trade memory for speed.
+---
+
+Why is the hash-map solution to Two Sum O(n) while the naive approach is O(n²)? What's the
+space trade-off?

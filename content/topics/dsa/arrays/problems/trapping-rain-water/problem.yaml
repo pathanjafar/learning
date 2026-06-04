@@ -1,0 +1,10 @@
+slug: trapping-rain-water
+title: Trapping Rain Water
+difficulty: hard
+ioMode: function
+languages:
+  - python
+  - java
+hints:
+  - "Water above a bar = min(maxLeft, maxRight) - height."
+  - "Use two pointers; always advance the side with the smaller running max."

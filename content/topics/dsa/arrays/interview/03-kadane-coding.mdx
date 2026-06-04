@@ -1,0 +1,21 @@
+---
+type: coding
+answer: |
+  Kadane's algorithm, O(n) time / O(1) space:
+
+  ```python
+  def maxSubArray(nums):
+      best = cur = nums[0]
+      for n in nums[1:]:
+          cur = max(n, cur + n)
+          best = max(best, cur)
+      return best
+  ```
+
+  Key insight: `cur` is the best subarray sum *ending at the current index* — either start fresh
+  at `n` or extend the previous run. `best` records the maximum seen. Handles all-negative arrays
+  because we seed with `nums[0]` rather than 0.
+---
+
+Coding: given an integer array, return the maximum sum of any contiguous subarray. Explain your
+approach and its complexity. (Then solve **Maximum Subarray** in the editor.)

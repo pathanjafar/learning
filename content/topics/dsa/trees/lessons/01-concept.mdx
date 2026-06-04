@@ -1,0 +1,52 @@
+---
+title: "Trees & Binary Trees"
+level: BEGINNER
+order: 1
+---
+
+# Trees
+
+A **tree** is a hierarchical structure of nodes: one root, and every node has zero or more
+children, with no cycles. A **binary tree** restricts each node to at most two children
+(`left`, `right`).
+
+```python
+class TreeNode:
+    def __init__(self, val, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+```
+
+## Traversals (the core skill)
+
+**Depth-First (recursion or stack):**
+```python
+def inorder(node):
+    if not node: return
+    inorder(node.left)      # left
+    print(node.val)         # root   (pre/in/post = where this line goes)
+    inorder(node.right)     # right
+```
+- **Preorder** (root, left, right) — copy/serialize a tree
+- **Inorder** (left, root, right) — gives **sorted** order in a BST
+- **Postorder** (left, right, root) — delete/free, compute sizes
+
+**Breadth-First / level-order (queue):**
+```python
+from collections import deque
+def bfs(root):
+    q = deque([root])
+    while q:
+        node = q.popleft()
+        for c in (node.left, node.right):
+            if c: q.append(c)
+```
+
+## Key terms
+
+Height, depth, leaf (no children), balanced (heights differ by ≤1). A balanced tree gives
+O(log n) operations; a degenerate one is O(n).
+
+Used in: max depth, path sum, lowest common ancestor, level order, serialize/deserialize,
+diameter. Most tree problems are a traversal plus a little bookkeeping.

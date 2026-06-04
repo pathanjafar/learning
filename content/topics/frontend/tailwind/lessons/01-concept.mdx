@@ -1,0 +1,44 @@
+---
+title: "Tailwind CSS: utility-first styling"
+level: BEGINNER
+order: 1
+---
+
+# Tailwind CSS
+
+**Tailwind** is a utility-first CSS framework. Instead of writing separate CSS files, you compose
+designs from small single-purpose classes directly in your markup.
+
+```html
+<button class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+  Click me
+</button>
+```
+
+That's the entire style — no separate stylesheet, no naming things.
+
+## The mental model
+
+Each class does one thing:
+- Spacing: `p-4` (padding), `m-2` (margin), `gap-3`
+- Color: `bg-slate-900`, `text-white`
+- Layout: `flex`, `grid`, `grid-cols-3`, `items-center`
+- Sizing: `w-full`, `max-w-md`, `h-screen`
+- Typography: `text-xl`, `font-bold`
+
+## Responsive & states with prefixes
+
+```html
+<div class="text-base md:text-lg lg:text-xl dark:bg-slate-800 hover:underline">
+```
+`md:` / `lg:` apply at breakpoints; `hover:`, `focus:`, `dark:` apply in those states.
+
+## Why it's popular
+
+- **No context switching** — style where you build, in the HTML/JSX.
+- **No naming fatigue** — no inventing `.card-header-title` class names.
+- **Consistent** — values come from a shared design scale; unused classes are purged at build for
+  tiny CSS bundles.
+
+Customize the scale in `tailwind.config.js`. Tailwind pairs especially well with component
+frameworks like React/Next.js (which this very platform uses).

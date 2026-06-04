@@ -1,0 +1,10 @@
+slug: best-time-stock
+title: Best Time to Buy and Sell Stock
+difficulty: easy
+ioMode: function
+languages:
+  - python
+  - java
+hints:
+  - "Track the lowest price seen so far as you scan left to right."
+  - "At each day, the best profit is today's price minus the min seen before today."

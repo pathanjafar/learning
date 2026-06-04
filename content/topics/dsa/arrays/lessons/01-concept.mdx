@@ -1,0 +1,34 @@
+---
+title: "Arrays: the foundation"
+level: BEGINNER
+order: 1
+---
+
+# Arrays
+
+An **array** stores elements in contiguous memory, giving O(1) access by index. It's the most
+common data structure in interviews and the base for many patterns (two pointers, sliding
+window, prefix sums).
+
+## Key operations & costs
+
+- Access by index: **O(1)**
+- Search (unsorted): **O(n)**
+- Insert / delete at end: **O(1)** amortized
+- Insert / delete in middle: **O(n)** (shifting)
+
+## The hashing trick
+
+Many "find a pair / count occurrences" problems turn O(n²) brute force into O(n) by trading
+space for time with a hash map. **Two Sum** (your first practice problem) is the canonical
+example: store each value's index as you scan, and check for the complement in O(1).
+
+```python
+seen = {}
+for i, n in enumerate(nums):
+    if target - n in seen:
+        return [seen[target - n], i]
+    seen[n] = i
+```
+
+Next: solve **Two Sum** in the editor, then continue to intermediate array patterns.

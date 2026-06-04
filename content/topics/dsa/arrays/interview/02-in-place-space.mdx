@@ -1,0 +1,12 @@
+---
+type: conceptual
+answer: |
+  In-place means O(1) extra space — you reuse the input array rather than allocating a new one
+  proportional to n. Use a write pointer: scan with a read index and copy/swap kept elements to
+  the next write slot. Move Zeroes and Remove Duplicates are canonical examples. The trade-off is
+  that you mutate the caller's data, which can be surprising; document it or copy first if the
+  caller needs the original.
+---
+
+What does it mean to solve an array problem "in place," and how do you do it without an extra
+array? When is that a bad idea?

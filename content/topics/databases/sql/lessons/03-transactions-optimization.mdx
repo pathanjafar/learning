@@ -1,0 +1,59 @@
+---
+title: "Transactions, Indexes, Normalization & Optimization"
+level: ADVANCED
+order: 3
+---
+
+# Transactions, Indexes & Optimization
+
+## Transactions & ACID
+
+A transaction groups statements into an all-or-nothing unit:
+
+```sql
+BEGIN;
+  UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+  UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+COMMIT;            -- or ROLLBACK to undo everything
+```
+
+**ACID:** **A**tomic (all or nothing), **C**onsistent (constraints hold), **I**solated
+(concurrent txns don't corrupt each other), **D**urable (survives crashes). **Isolation levels**
+(Read Committed → Serializable) trade concurrency for protection against dirty/non-repeatable/
+phantom reads.
+
+## Indexes
+
+```sql
+CREATE INDEX idx_users_email ON users (email);
+```
+An index is a sorted lookup structure (usually a B-tree) that turns O(n) scans into O(log n)
+seeks. **Clustered** indexes define physical row order (one per table); **non-clustered** are
+separate structures. Cost: extra storage and slower writes — index what you **filter/join/sort**
+on, not everything.
+
+## Views, procedures, triggers
+
+```sql
+CREATE VIEW active_users AS SELECT * FROM users WHERE active;   -- saved query
+```
+- **Materialized views** store results (refresh to update) for expensive queries.
+- **Stored procedures** encapsulate logic with parameters and control flow (IF/WHILE/CASE).
+- **Triggers** auto-run on INSERT/UPDATE/DELETE (auditing, derived columns).
+
+## Normalization
+
+Organize data to eliminate redundancy:
+- **1NF** — atomic values, no repeating groups.
+- **2NF** — 1NF + no partial dependency on part of a composite key.
+- **3NF** — 2NF + no transitive dependencies (non-keys depend only on the key).
+- **BCNF** — stricter 3NF.
+- **Denormalization** deliberately duplicates data to speed reads (trade-off).
+
+## Query optimization
+
+```sql
+EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 42;
+```
+Read the **execution plan**: look for sequential scans on big tables (add an index), bad join
+orders, and stale **statistics**. Refactor queries, add covering indexes, and keep stats fresh.

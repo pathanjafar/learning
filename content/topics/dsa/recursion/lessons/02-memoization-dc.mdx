@@ -1,0 +1,52 @@
+---
+title: "From Recursion to Memoization & Divide-and-Conquer"
+level: INTERMEDIATE
+order: 2
+---
+
+# Recursion → Memoization & Divide-and-Conquer
+
+## The recursion blueprint
+
+```python
+def solve(state):
+    if base_case(state):
+        return base_value
+    return combine(solve(smaller_1), solve(smaller_2), ...)
+```
+Trust each recursive call returns the right answer for its smaller input ("recursive leap of
+faith"), then combine.
+
+## Memoization — kill repeated work
+
+Plain recursion recomputes the same subproblems exponentially. Cache them:
+```python
+from functools import lru_cache
+@lru_cache(None)
+def fib(n):
+    if n < 2: return n
+    return fib(n-1) + fib(n-2)      # O(2^n) -> O(n) with the cache
+```
+This is the bridge to **Dynamic Programming** (top-down DP *is* memoized recursion).
+
+## Divide-and-conquer
+
+Split into independent subproblems, solve, then merge.
+```python
+def merge_sort(a):
+    if len(a) <= 1: return a
+    mid = len(a) // 2
+    left = merge_sort(a[:mid])      # divide
+    right = merge_sort(a[mid:])
+    return merge(left, right)       # conquer/combine
+```
+Cost via the recurrence `T(n) = 2T(n/2) + O(n)` → **O(n log n)**. Same shape powers binary search,
+quickselect, and "count inversions."
+
+## Recursion ↔ stack
+
+Any recursion converts to iteration with an explicit stack. Watch recursion **depth** (Python's
+limit ~1000); deep linear recursion can overflow — convert to iteration or increase the limit.
+
+**Recognition cue:** problems defined in terms of smaller versions of themselves (trees,
+divide-and-conquer, generating combinations) — and if subproblems repeat, add memoization.

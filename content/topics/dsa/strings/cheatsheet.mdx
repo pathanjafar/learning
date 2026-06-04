@@ -1,0 +1,30 @@
+---
+title: "Strings cheatsheet"
+---
+
+# Strings cheatsheet
+
+| Need | Technique | Cost |
+|------|-----------|------|
+| Build a string in a loop | collect + join / StringBuilder | O(n) |
+| Check palindrome | two pointers | O(n) |
+| Anagram check | char counts (26-array or Counter) | O(n) |
+| Group anagrams | hash by sorted-letters / count key | O(n·k) |
+| Longest substring with property | sliding window + hash map | O(n) |
+| Exact pattern search | KMP / Rabin-Karp | O(n + m) |
+| Compare/transform two strings | 2-D DP (LCS, edit distance) | O(n·m) |
+
+**Gotchas:** strings are immutable in Python & Java (repeated `+` is O(n²)); watch case and
+non-alphanumeric filtering; Unicode vs ASCII; empty-string and single-char edge cases.
+
+**Idioms**
+```python
+s[::-1]                    # reverse
+"".join(parts)             # build
+Counter(s)                 # counts
+s.lower(); c.isalnum()     # normalize/filter
+```
+```java
+new StringBuilder(s).reverse().toString();
+s.toCharArray(); Character.toLowerCase(c); Character.isLetterOrDigit(c);
+```

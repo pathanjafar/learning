@@ -1,0 +1,63 @@
+---
+title: "Heap Patterns: top-K, two-heaps, merge"
+level: INTERMEDIATE
+order: 2
+---
+
+# Heap Patterns
+
+A heap gives you the current min/max in O(1) and reshuffles in O(log n). Three patterns cover most
+problems.
+
+## 1. Top-K with a bounded heap
+
+Keep a heap of size K instead of sorting everything → O(n log k).
+```python
+import heapq
+def k_largest(nums, k):
+    h = []
+    for n in nums:
+        heapq.heappush(h, n)        # min-heap
+        if len(h) > k:
+            heapq.heappop(h)        # drop the smallest
+    return h[0]                     # kth largest = heap root
+```
+For "top-K frequent," push `(count, item)` pairs.
+
+## 2. Two heaps — running median
+
+A **max-heap** of the lower half and a **min-heap** of the upper half; keep sizes balanced. The
+median is a root (or the average of both roots).
+```python
+import heapq
+lo, hi = [], []                     # lo is max-heap (store negatives)
+def add(x):
+    heapq.heappush(lo, -heapq.heappushpop(hi, x))
+    if len(lo) > len(hi):
+        heapq.heappush(hi, -heapq.heappop(lo))
+```
+
+## 3. K-way merge
+
+A heap of the current front of each list merges K sorted sequences efficiently.
+```python
+import heapq
+def merge_k(lists):
+    h = [(l[0], i, 0) for i, l in enumerate(lists) if l]
+    heapq.heapify(h)
+    out = []
+    while h:
+        val, i, j = heapq.heappop(h)
+        out.append(val)
+        if j + 1 < len(lists[i]):
+            heapq.heappush(h, (lists[i][j+1], i, j+1))
+    return out
+```
+Also powers Dijkstra (min-heap by distance).
+
+## Max-heap in Python
+
+`heapq` is a min-heap; push negatives (`-x`) or wrap values to simulate a max-heap.
+
+**Recognition cue:** "K largest/smallest/most frequent," "median of a stream," or repeatedly
+needing the current best while data arrives.

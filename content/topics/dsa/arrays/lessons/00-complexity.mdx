@@ -1,0 +1,63 @@
+---
+title: "Big-O & Complexity (Foundations)"
+level: BEGINNER
+order: 0
+---
+
+# Time & Space Complexity
+
+Before any data structure, you need a way to compare algorithms independent of hardware.
+**Big-O** describes how runtime or memory grows as the input size `n` grows.
+
+## The common growth classes (best → worst)
+
+| Big-O | Name | Example |
+|-------|------|---------|
+| O(1) | Constant | Array index access, hash lookup |
+| O(log n) | Logarithmic | Binary search |
+| O(n) | Linear | Single loop over `n` items |
+| O(n log n) | Linearithmic | Merge sort, heap sort |
+| O(n²) | Quadratic | Nested loops (naive pair check) |
+| O(n³) | Cubic | Triple nested loops |
+| O(2ⁿ) | Exponential | Naive recursive Fibonacci, subsets |
+| O(n!) | Factorial | Generating all permutations |
+
+```python
+# O(1) — one operation regardless of n
+x = arr[5]
+
+# O(n) — touches each element once
+for v in arr: total += v
+
+# O(n²) — every pair
+for i in arr:
+    for j in arr:
+        compare(i, j)
+```
+
+## How to analyze
+
+- Drop constants and lower-order terms: `3n + 5` → **O(n)**, `n² + n` → **O(n²)**.
+- Sequential loops add (`O(n) + O(n) = O(n)`); nested loops multiply (`O(n) × O(n) = O(n²)`).
+- Big-O is the **worst case**; Θ (theta) describes the tight/average bound.
+
+## Space complexity
+
+Counts **extra** memory beyond the input:
+- **Auxiliary space** — temporary structures you allocate.
+- **Recursion stack** — each recursive call adds a frame; depth `d` → O(d) space.
+
+```python
+# O(n) extra space (new list)        # O(1) extra space (in place)
+doubled = [x*2 for x in arr]         for i in range(len(arr)): arr[i] *= 2
+```
+
+## Why it matters
+
+Choosing O(n) over O(n²) is the difference between an algorithm finishing instantly and timing
+out on large inputs. Every topic in this track is ultimately about **reducing complexity** —
+hashing turns O(n²) lookups into O(n), binary search turns O(n) into O(log n), and DP turns
+exponential recursion into polynomial.
+
+**Practice:** [Two Sum](https://leetcode.com/problems/two-sum/) ·
+[Binary Search](https://leetcode.com/problems/binary-search/)

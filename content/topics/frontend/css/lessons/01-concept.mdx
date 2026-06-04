@@ -1,0 +1,51 @@
+---
+title: "CSS: styling the web"
+level: BEGINNER
+order: 1
+---
+
+# CSS
+
+**CSS** (Cascading Style Sheets) controls how HTML looks — colors, spacing, layout, typography.
+You select elements and declare property/value rules.
+
+```css
+/* selector { property: value; } */
+h1 {
+  color: #1e293b;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+```
+
+## The box model
+
+Every element is a box: **content → padding → border → margin**. `box-sizing: border-box` makes
+width include padding and border (almost always what you want).
+
+## The cascade & specificity
+
+When multiple rules target an element, the winner is decided by **specificity** (inline > id >
+class > element) and then source order. Avoid `!important` except as a last resort.
+
+## Layout — the two modern systems
+
+**Flexbox** (one dimension — a row or column):
+```css
+.row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+```
+
+**Grid** (two dimensions — rows and columns):
+```css
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+```
+
+## Responsive design
+
+Use relative units (`rem`, `%`, `vh`) and media queries:
+```css
+@media (max-width: 640px) { .grid { grid-template-columns: 1fr; } }
+```
+
+Master flexbox, grid, and the box model and you can build any layout. Next: Tailwind packages
+these into utility classes.

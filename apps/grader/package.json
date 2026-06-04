@@ -1,0 +1,6 @@
+{
+  "name": "@reborn/grader",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Python FastAPI grading service (managed with pip/uvicorn, not npm). This package.json exists only so npm workspaces don't error on the apps/* glob."
+}

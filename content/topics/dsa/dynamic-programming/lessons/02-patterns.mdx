@@ -1,0 +1,59 @@
+---
+title: "DP Patterns: knapsack, sequences, grids"
+level: ADVANCED
+order: 2
+---
+
+# Dynamic Programming Patterns
+
+Once you can name the **state** and **transition**, most DP problems fall into a few families.
+
+## 1. Linear / "decision per index"
+
+`dp[i]` depends on a few earlier indices.
+```python
+# House Robber: rob i or skip it
+dp = [0] * (n + 1); dp[1] = nums[0]
+for i in range(2, n + 1):
+    dp[i] = max(dp[i-1], dp[i-2] + nums[i-1])
+```
+Family: climbing stairs, max subarray (Kadane), LIS.
+
+## 2. Knapsack (choose subset under a budget)
+
+```python
+# 0/1 knapsack: each item used at most once
+dp = [0] * (W + 1)
+for wt, val in items:
+    for w in range(W, wt - 1, -1):       # iterate budget DOWN for 0/1
+        dp[w] = max(dp[w], dp[w - wt] + val)
+```
+Coin change (unbounded) iterates the budget **up** instead. Family: partition equal subset sum,
+coin change, combination sum.
+
+## 3. Two-sequence DP (grid over two strings)
+
+`dp[i][j]` compares prefixes of two inputs.
+```python
+# Longest Common Subsequence
+for i in range(1, m+1):
+    for j in range(1, n+1):
+        if A[i-1] == B[j-1]: dp[i][j] = dp[i-1][j-1] + 1
+        else: dp[i][j] = max(dp[i-1][j], dp[i][j-1])
+```
+Family: edit distance, interleaving string, regex/wildcard matching.
+
+## 4. Grid DP
+
+`dp[r][c]` from neighbors (up/left) — unique paths, min path sum, maximal square.
+
+## Designing a DP (the recipe)
+
+1. **State** — what does `dp[...]` mean? (the hardest step)
+2. **Transition** — how do states relate?
+3. **Base cases** — smallest inputs.
+4. **Order** — iterate so dependencies are ready.
+5. **Optimize space** — often a 2-D table collapses to 1-D (e.g. knapsack, LCS).
+
+**Recognition cue:** "count the ways / min cost / max value" with **optimal substructure** and
+**overlapping subproblems** — and greedy gives wrong answers.

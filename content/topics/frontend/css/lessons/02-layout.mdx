@@ -1,0 +1,61 @@
+---
+title: "Layout Systems: Flexbox, Grid & Positioning"
+level: INTERMEDIATE
+order: 2
+---
+
+# Layout Systems
+
+## Flexbox — one-dimensional layout
+
+Flexbox arranges items in a single row or column. Set `display: flex` on the **container**; it
+controls its direct **items**.
+
+```css
+.container {
+  display: flex;
+  flex-direction: row;        /* or column */
+  justify-content: space-between;  /* along the MAIN axis */
+  align-items: center;        /* along the CROSS axis */
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.item { flex: 1; }            /* grow to fill; shorthand for grow/shrink/basis */
+```
+
+- **Main axis** follows `flex-direction`; **cross axis** is perpendicular.
+- `justify-content` aligns on the main axis; `align-items` on the cross axis.
+- `flex-grow` / `flex-shrink` / `flex-basis` control how items resize; `order` reorders visually.
+
+## CSS Grid — two-dimensional layout
+
+Grid handles rows **and** columns at once.
+
+```css
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);   /* 3 equal columns */
+  grid-template-rows: auto;
+  gap: 1rem;
+}
+/* Responsive without media queries: */
+.cards { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+```
+
+- `auto-fit` / `auto-fill` + `minmax()` create responsive grids automatically.
+- `grid-template-areas` lets you name regions and place items visually.
+
+**Flexbox vs Grid:** use **Flexbox** for content flowing in one direction (navbars, toolbars);
+use **Grid** for true 2-D layouts (page scaffolding, card galleries).
+
+## Positioning
+
+```css
+.box { position: relative; top: 10px; }   /* offset from normal spot */
+.modal { position: fixed; inset: 0; }      /* relative to viewport */
+.tip { position: absolute; }               /* relative to nearest positioned ancestor */
+.header { position: sticky; top: 0; }      /* sticks when scrolled to */
+```
+
+`z-index` controls stacking, but only within the same **stacking context** — a common source of
+"why won't this go on top?" bugs.

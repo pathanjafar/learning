@@ -1,0 +1,10 @@
+slug: UNIQUE_PROBLEM_SLUG
+title: Problem Title
+difficulty: easy            # easy | medium | hard
+ioMode: function           # function | stdio
+languages:
+  - python
+  - java
+hints:
+  - "First hint."
+  - "Second hint."

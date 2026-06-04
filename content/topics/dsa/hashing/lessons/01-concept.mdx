@@ -1,0 +1,52 @@
+---
+title: "Hashing: O(1) lookups"
+level: BEGINNER
+order: 1
+---
+
+# Hashing
+
+A **hash table** maps keys to values using a hash function that converts a key into an array
+index. This gives **average O(1)** insert, lookup, and delete — the single most useful trick in
+algorithm interviews.
+
+## Core idea
+
+```
+index = hash(key) % table_size
+```
+
+Collisions (two keys hashing to the same index) are handled by chaining (linked lists per bucket)
+or open addressing (probe for the next free slot).
+
+## When to reach for it
+
+- **Membership / "have I seen this?"** → hash **set**
+- **Counting frequencies** → hash **map** of value → count
+- **Pairing by complement** (Two Sum) → store seen values, look up `target - n`
+- **Grouping** (anagrams) → hash a canonical key (e.g. sorted letters)
+
+```python
+# Frequency count
+from collections import Counter
+counts = Counter(nums)        # {value: occurrences}
+
+# Membership
+seen = set()
+if x in seen: ...             # O(1) average
+```
+
+```java
+Map<Integer, Integer> counts = new HashMap<>();
+for (int n : nums) counts.merge(n, 1, Integer::sum);
+Set<Integer> seen = new HashSet<>();
+```
+
+## Cost
+
+| Operation | Average | Worst (bad hashing) |
+|-----------|---------|---------------------|
+| insert / lookup / delete | O(1) | O(n) |
+
+The trade-off is **memory** — you store extra data to buy speed. Hashing turns many O(n²)
+brute-force scans into O(n).

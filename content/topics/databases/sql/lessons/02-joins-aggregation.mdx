@@ -1,0 +1,65 @@
+---
+title: "Joins, Subqueries & Aggregation"
+level: INTERMEDIATE
+order: 2
+---
+
+# Joins, Subqueries & Aggregation
+
+## JOINs — combining tables
+
+```sql
+SELECT u.name, o.total
+FROM users u
+INNER JOIN orders o ON o.user_id = u.id;
+```
+
+| Join | Returns |
+|------|---------|
+| `INNER JOIN` | only matching rows in both |
+| `LEFT JOIN` | all left rows + matches (NULLs if none) |
+| `RIGHT JOIN` | all right rows + matches |
+| `FULL JOIN` | all rows from both |
+| `CROSS JOIN` | every combination (Cartesian) |
+| **self join** | a table joined to itself (e.g. employee → manager) |
+
+## Subqueries
+
+```sql
+-- scalar subquery
+SELECT name FROM users WHERE id = (SELECT user_id FROM orders ORDER BY total DESC LIMIT 1);
+
+-- correlated subquery (runs per outer row)
+SELECT u.name FROM users u
+WHERE EXISTS (SELECT 1 FROM orders o WHERE o.user_id = u.id AND o.total > 100);
+```
+`IN`, `EXISTS`, and `NOT EXISTS` test membership; `EXISTS` often outperforms `IN` on large sets.
+
+## Aggregation
+
+```sql
+SELECT user_id, COUNT(*) AS orders, SUM(total) AS spent
+FROM orders
+GROUP BY user_id
+HAVING SUM(total) > 500          -- filter AFTER grouping (WHERE filters before)
+ORDER BY spent DESC;
+```
+Functions: `COUNT`, `SUM`, `AVG`, `MAX`, `MIN`. **`WHERE` filters rows; `HAVING` filters groups.**
+
+## Set operations
+
+```sql
+SELECT id FROM a
+UNION       -- combine, dedupe (UNION ALL keeps dupes)
+SELECT id FROM b;
+-- also INTERSECT (in both) and EXCEPT (in first, not second)
+```
+
+## String & date functions
+
+```sql
+SELECT UPPER(name), LENGTH(name), SUBSTRING(name, 1, 3),
+       name LIKE 'A%' AS starts_a,
+       EXTRACT(YEAR FROM created_at), created_at + INTERVAL '7 days'
+FROM users;
+```

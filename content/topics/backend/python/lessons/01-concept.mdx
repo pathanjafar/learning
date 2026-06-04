@@ -1,0 +1,67 @@
+---
+title: "Python fundamentals"
+level: BEGINNER
+order: 1
+---
+
+# Python
+
+**Python** is a readable, general-purpose language popular for backends, scripting, data, and AI.
+It's dynamically typed with clean, indentation-based syntax.
+
+## Basics
+
+```python
+name = "Ada"          # no type declarations
+age = 36
+is_active = True
+
+def greet(name):
+    return f"Hi {name}"   # f-string
+```
+
+Indentation (not braces) defines blocks — consistency matters.
+
+## Core data structures
+
+```python
+nums = [1, 2, 3]              # list (mutable)
+point = (4, 5)               # tuple (immutable)
+user = {"id": 1, "name": "Ada"}  # dict
+unique = {1, 2, 3}           # set
+```
+
+Comprehensions are idiomatic:
+```python
+squares = [n * n for n in nums if n % 2]
+```
+
+## Functions, classes, modules
+
+```python
+class User:
+    def __init__(self, name):
+        self.name = name
+    def greet(self):
+        return f"Hi {self.name}"
+```
+
+Import code with `import module` / `from module import thing`. Install packages with `pip`.
+
+## Backend with Python
+
+Frameworks like **FastAPI** and **Django** build APIs quickly (this platform's code grader is a
+FastAPI service):
+```python
+from fastapi import FastAPI
+app = FastAPI()
+
+@app.get("/health")
+def health():
+    return {"ok": True}
+```
+
+## Why Python
+
+Batteries-included standard library, huge ecosystem (data/ML/web), fast to write. Watch the GIL
+for CPU-bound concurrency; use async or multiprocessing where needed.

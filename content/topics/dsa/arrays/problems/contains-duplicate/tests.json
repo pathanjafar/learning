@@ -1,0 +1,6 @@
+[
+  { "input": "[1,2,3,1]", "expected": "true", "isHidden": false, "compareMode": "TRIMMED" },
+  { "input": "[1,2,3,4]", "expected": "false", "isHidden": false, "compareMode": "TRIMMED" },
+  { "input": "[1,1]", "expected": "true", "isHidden": true, "compareMode": "TRIMMED" },
+  { "input": "[7]", "expected": "false", "isHidden": true, "compareMode": "TRIMMED" }
+]

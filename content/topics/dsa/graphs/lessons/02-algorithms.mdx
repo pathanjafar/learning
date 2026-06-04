@@ -1,0 +1,64 @@
+---
+title: "Graph Algorithms: Topological Sort, Dijkstra, Union-Find"
+level: ADVANCED
+order: 2
+---
+
+# Core Graph Algorithms
+
+Beyond plain BFS/DFS, a handful of algorithms cover most graph problems.
+
+## Topological sort (DAGs)
+
+Order vertices so every edge points forward — for dependency/scheduling problems.
+```python
+from collections import deque
+def topo(n, edges):
+    adj = [[] for _ in range(n)]; indeg = [0]*n
+    for u, v in edges:
+        adj[u].append(v); indeg[v] += 1
+    q = deque(i for i in range(n) if indeg[i] == 0)
+    order = []
+    while q:
+        u = q.popleft(); order.append(u)
+        for v in adj[u]:
+            indeg[v] -= 1
+            if indeg[v] == 0: q.append(v)
+    return order if len(order) == n else []   # [] means a cycle exists
+```
+This is **Kahn's algorithm**; it also detects cycles (course schedule).
+
+## Dijkstra (shortest path, non-negative weights)
+
+Greedily expand the closest unsettled node using a min-heap.
+```python
+import heapq
+def dijkstra(adj, src):
+    dist = {src: 0}; pq = [(0, src)]
+    while pq:
+        d, u = heapq.heappop(pq)
+        if d > dist.get(u, float("inf")): continue
+        for v, w in adj[u]:
+            nd = d + w
+            if nd < dist.get(v, float("inf")):
+                dist[v] = nd; heapq.heappush(pq, (nd, v))
+    return dist
+```
+For negative edges use **Bellman-Ford** (and detect negative cycles); all-pairs → Floyd-Warshall.
+
+## Union-Find (connectivity)
+
+Near-O(1) union/find with path compression + union by rank.
+```python
+parent = list(range(n))
+def find(x):
+    while parent[x] != x:
+        parent[x] = parent[parent[x]]   # path compression
+        x = parent[x]
+    return x
+def union(a, b): parent[find(a)] = find(b)
+```
+Powers connected components, cycle detection in undirected graphs, and Kruskal's MST.
+
+**Recognition cue:** dependencies/ordering → topo sort; weighted shortest path → Dijkstra;
+"are these connected / merge groups" → Union-Find.

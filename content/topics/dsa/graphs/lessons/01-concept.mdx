@@ -1,0 +1,53 @@
+---
+title: "Graphs: BFS & DFS"
+level: BEGINNER
+order: 1
+---
+
+# Graphs
+
+A **graph** is a set of nodes (vertices) connected by edges. Edges can be **directed** or
+undirected, **weighted** or unweighted. Trees and linked lists are special cases of graphs.
+
+## Representing a graph
+
+```python
+# Adjacency list (most common) — node -> list of neighbors
+graph = {0: [1, 2], 1: [2], 2: [0, 3], 3: []}
+```
+
+Adjacency lists use O(V + E) space and are preferred over adjacency matrices for sparse graphs.
+
+## The two fundamental traversals
+
+**BFS (queue)** — explores level by level; finds the **shortest path in an unweighted graph**:
+```python
+from collections import deque
+def bfs(graph, start):
+    seen, q = {start}, deque([start])
+    while q:
+        node = q.popleft()
+        for nxt in graph[node]:
+            if nxt not in seen:
+                seen.add(nxt); q.append(nxt)
+```
+
+**DFS (recursion/stack)** — explores as deep as possible; good for connectivity, cycles, topological sort:
+```python
+def dfs(graph, node, seen):
+    seen.add(node)
+    for nxt in graph[node]:
+        if nxt not in seen:
+            dfs(graph, nxt, seen)
+```
+
+> Always track **visited** nodes, or cycles cause infinite loops.
+
+## Common algorithms & when
+
+- **BFS** — shortest path (unweighted), level order
+- **DFS** — connected components, cycle detection, topological sort
+- **Dijkstra** (heap) — shortest path with non-negative weights
+- **Union-Find** — connectivity, detecting cycles in undirected graphs
+
+Used in: number of islands, course schedule, clone graph, word ladder, network delay.

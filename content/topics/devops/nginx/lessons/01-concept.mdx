@@ -1,0 +1,49 @@
+---
+title: "Nginx: web server & reverse proxy"
+level: BEGINNER
+order: 1
+---
+
+# Nginx
+
+**Nginx** (pronounced "engine-x") is a high-performance web server most often used as a **reverse
+proxy** — sitting in front of your application, handling TLS, routing, and serving static files.
+(This platform uses Nginx as its edge proxy.)
+
+## What a reverse proxy does
+
+Clients hit Nginx; Nginx forwards requests to your backend apps and returns their responses. This
+lets you terminate HTTPS, load-balance, and expose one public port for many services.
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name example.com;
+
+    ssl_certificate     /etc/nginx/certs/fullchain.pem;
+    ssl_certificate_key /etc/nginx/certs/privkey.pem;
+
+    location / {
+        proxy_pass http://localhost:3000;   # forward to the app
+        proxy_set_header Host $host;
+    }
+
+    location /api/ {
+        proxy_pass http://localhost:4000/;  # forward API to another service
+    }
+}
+```
+
+## Common jobs
+
+- **TLS/SSL termination** — handle HTTPS so your app doesn't have to.
+- **Reverse proxy** — route paths to different backend services.
+- **Static file serving** — fast delivery of images, CSS, JS.
+- **Load balancing** — spread traffic across multiple app instances.
+- **Gzip/caching, rate limiting** — performance and protection.
+
+## Why Nginx
+
+It handles thousands of concurrent connections with low memory thanks to an event-driven model.
+You write declarative config blocks (`server`, `location`), reload with `nginx -s reload`, and put
+it in front of Node/Python/any backend.

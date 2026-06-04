@@ -1,0 +1,57 @@
+---
+title: "Trie Patterns & Variants"
+level: INTERMEDIATE
+order: 2
+---
+
+# Trie Patterns
+
+## Clean implementation
+
+```python
+class Trie:
+    def __init__(self): self.root = {}
+    def insert(self, word):
+        node = self.root
+        for ch in word:
+            node = node.setdefault(ch, {})
+        node["$"] = True               # end-of-word marker
+    def _walk(self, prefix):
+        node = self.root
+        for ch in prefix:
+            if ch not in node: return None
+            node = node[ch]
+        return node
+    def search(self, word):  n = self._walk(word); return bool(n and "$" in n)
+    def starts_with(self, p): return self._walk(p) is not None
+```
+Every operation is **O(L)** in the word length, independent of how many words are stored.
+
+## Pattern 1: prefix autocomplete
+
+After walking to the prefix node, DFS the subtree to collect all completions.
+
+## Pattern 2: wildcard search
+
+When a `.` can match any character, recurse over all children at that position:
+```python
+def search(node, word, i):
+    if i == len(word): return "$" in node
+    ch = word[i]
+    if ch == ".":
+        return any(search(node[c], word, i+1) for c in node if c != "$")
+    return ch in node and search(node[ch], word, i+1)
+```
+
+## Pattern 3: trie + grid DFS (Word Search II)
+
+Build a trie of all target words, then DFS the board once, pruning a branch the moment the current
+path isn't a trie prefix — far faster than searching each word separately.
+
+## Pattern 4: bitwise trie
+
+Insert numbers bit-by-bit (MSB first) to answer **maximum XOR** queries: at each bit, greedily go
+to the opposite bit if it exists.
+
+**Recognition cue:** many strings sharing prefixes, "starts with," autocomplete, or maximize-XOR
+over a set.

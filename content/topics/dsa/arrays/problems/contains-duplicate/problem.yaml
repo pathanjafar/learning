@@ -1,0 +1,9 @@
+slug: contains-duplicate
+title: Contains Duplicate
+difficulty: easy
+ioMode: function
+languages:
+  - python
+  - java
+hints:
+  - "A set tells you in O(1) whether you've seen a value before."

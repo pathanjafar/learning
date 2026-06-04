@@ -1,0 +1,47 @@
+---
+title: "Next.js: the React framework"
+level: BEGINNER
+order: 1
+---
+
+# Next.js
+
+**Next.js** is a production framework built on React. It adds routing, server-side rendering, API
+routes, and optimizations that you'd otherwise wire up yourself. (This platform's frontend is
+built with it.)
+
+## File-based routing (App Router)
+
+Folders under `app/` become routes; a `page.tsx` file is the page:
+
+```
+app/
+  page.tsx              -> /
+  about/page.tsx        -> /about
+  blog/[slug]/page.tsx  -> /blog/:slug   (dynamic)
+```
+
+## Server vs Client Components
+
+By default components render on the **server** (fast, SEO-friendly, can fetch data directly). Add
+`"use client"` at the top for interactivity (state, effects, event handlers).
+
+```tsx
+// Server Component — runs on the server, can be async
+export default async function Page() {
+  const data = await fetch("https://api...").then(r => r.json());
+  return <main>{data.title}</main>;
+}
+```
+
+## Why teams use it
+
+- **SSR & SSG** — render on the server for speed and SEO (great for content sites).
+- **API routes** — backend endpoints (`app/api/.../route.ts`) in the same project.
+- **Built-in optimization** — image/font optimization, code splitting, caching.
+- **Full-stack** — frontend and backend in one codebase.
+
+## Rendering strategies
+
+Static (SSG), server-rendered (SSR), incremental (ISR), and client-side — pick per page. Next.js
+is the default choice for new React apps that need SEO or server logic.

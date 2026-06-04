@@ -1,0 +1,134 @@
+# Reborn — full stack. Target host: Ubuntu 22.04. See infra/judge0/README.md for the
+# REQUIRED cgroup host-prep before Judge0 will sandbox correctly.
+#
+# All services are containerized (the "all-Docker" decision). PM2 is NOT used; Docker
+# restart policies provide resilience. To add Node cluster-mode later, see apps/api/Dockerfile.
+name: reborn
+
+x-restart: &restart
+  restart: unless-stopped
+
+services:
+  # ---------------------------------------------------------------- application data
+  postgres:
+    image: postgres:16-alpine
+    <<: *restart
+    ports:
+      - "5544:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks: [appnet]
+
+  # ---------------------------------------------------------------- python grader
+  grader:
+    build: ../apps/grader
+    <<: *restart
+    environment:
+      JUDGE0_URL: http://judge0-server:2358
+      EXEC_CPU_TIME_LIMIT: ${EXEC_CPU_TIME_LIMIT}
+      EXEC_WALL_TIME_LIMIT: ${EXEC_WALL_TIME_LIMIT}
+      EXEC_MEMORY_LIMIT_KB: ${EXEC_MEMORY_LIMIT_KB}
+      EXEC_MAX_PROCESSES: ${EXEC_MAX_PROCESSES}
+      EXEC_MAX_OUTPUT_KB: ${EXEC_MAX_OUTPUT_KB}
+    depends_on: [judge0-server]
+    networks: [appnet]
+
+  # ---------------------------------------------------------------- node api
+  api:
+    build:
+      context: ..
+      dockerfile: apps/api/Dockerfile
+    <<: *restart
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET}
+      GRADER_URL: http://grader:8001
+      API_PORT: 4000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [appnet]
+
+  # ---------------------------------------------------------------- next.js web
+  web:
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+    <<: *restart
+    environment:
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+      API_INTERNAL_URL: http://api:4000
+    depends_on: [api]
+    networks: [appnet]
+
+  # ---------------------------------------------------------------- nginx edge
+  nginx:
+    image: nginx:1.27-alpine
+    <<: *restart
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on: [web, api]
+    networks: [appnet]
+
+  # ================================================================ Judge0 stack
+  # Judge0 has its OWN postgres + redis, intentionally isolated from app data.
+  judge0-server:
+    image: judge0/judge0:1.13.1
+    <<: *restart
+    ports:
+      - "2358:2358"
+    volumes:
+      - ./judge0/judge0.conf:/judge0.conf:ro
+    privileged: true # isolate sandbox requires this
+    depends_on: [judge0-db, judge0-redis]
+    networks: [appnet]
+
+  judge0-workers:
+    image: judge0/judge0:1.13.1
+    <<: *restart
+    command: ["./scripts/workers"]
+    volumes:
+      - ./judge0/judge0.conf:/judge0.conf:ro
+    privileged: true
+    depends_on: [judge0-db, judge0-redis]
+    networks: [appnet]
+
+  judge0-db:
+    image: postgres:13-alpine
+    <<: *restart
+    environment:
+      POSTGRES_USER: judge0
+      POSTGRES_PASSWORD: judge0
+      POSTGRES_DB: judge0
+    volumes:
+      - judge0-pg:/var/lib/postgresql/data
+    networks: [appnet]
+
+  judge0-redis:
+    image: redis:7-alpine
+    <<: *restart
+    command: ["redis-server", "--appendonly", "no"]
+    networks: [appnet]
+
+volumes:
+  pgdata:
+  judge0-pg:
+
+networks:
+  appnet:
+    driver: bridge

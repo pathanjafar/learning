@@ -1,0 +1,53 @@
+---
+title: "Forms, Validation & Accessibility"
+level: INTERMEDIATE
+order: 2
+---
+
+# Forms & Accessibility
+
+## Forms
+
+Forms collect user input. The `<form>` element wraps controls and defines where/how data is sent.
+
+```html
+<form action="/submit" method="post" enctype="multipart/form-data">
+  <label for="email">Email</label>
+  <input id="email" name="email" type="email" required />
+
+  <label for="age">Age</label>
+  <input id="age" name="age" type="number" min="0" max="120" />
+
+  <textarea name="bio" maxlength="200"></textarea>
+
+  <select name="role">
+    <option value="student">Student</option>
+    <option value="admin">Admin</option>
+  </select>
+
+  <button type="submit">Send</button>
+</form>
+```
+
+- **`action`** — URL the data goes to; **`method`** — `get` (query string) or `post` (body);
+  **`enctype`** — `multipart/form-data` is required for file uploads.
+- **Input types** — `text`, `email`, `password`, `number`, `date`, `file`, `checkbox`, `radio`.
+  The right type gives mobile keyboards and free validation.
+
+### HTML5 validation
+Built-in, no JavaScript needed: `required`, `pattern="[A-Za-z]+"`, `min`/`max`, `minlength`,
+`type="email"`. The browser blocks submit and shows a message.
+
+## Accessibility (a11y)
+
+Make pages usable by everyone, including screen-reader and keyboard users.
+
+- **Always pair `<label for>` with an input `id`** — screen readers announce the label.
+- **`alt` text** on images describes them (`alt=""` for decorative images).
+- **ARIA** fills gaps semantic HTML can't: `aria-label`, `role="dialog"`, `aria-expanded`.
+- **Keyboard navigation** — everything clickable must be reachable with Tab and operable with
+  Enter/Space. Use real `<button>`/`<a>`, not clickable `<div>`s.
+- **WCAG** guidelines: sufficient color contrast, focus indicators, no info conveyed by color alone.
+
+> Rule of thumb: use the correct semantic element first; reach for ARIA only when no native
+> element fits.

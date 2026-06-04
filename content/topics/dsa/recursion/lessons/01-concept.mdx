@@ -1,0 +1,46 @@
+---
+title: "Recursion"
+level: BEGINNER
+order: 1
+---
+
+# Recursion
+
+A **recursive** function solves a problem by calling itself on smaller inputs until it reaches a
+**base case** that can be answered directly.
+
+## The two required parts
+
+1. **Base case** — the smallest input, solved without recursing (stops infinite loops).
+2. **Recursive case** — reduce the problem and call yourself.
+
+```python
+def factorial(n):
+    if n <= 1:          # base case
+        return 1
+    return n * factorial(n - 1)   # recursive case
+```
+
+## How to think about it
+
+Trust that the recursive call returns the correct answer for the smaller input (the "recursive
+leap of faith"), then combine it with the current step. Each call adds a frame to the **call
+stack**; too-deep recursion causes a stack overflow.
+
+```python
+def fib(n):
+    if n < 2: return n
+    return fib(n - 1) + fib(n - 2)   # exponential without memoization!
+```
+
+## Recursion ↔ iteration
+
+Any recursion can be rewritten with an explicit stack. Recursion is cleaner for **tree/graph
+traversal, divide-and-conquer** (merge sort, binary search), and **backtracking**.
+
+## Watch out
+
+- Always make progress toward the base case.
+- Repeated subproblems (like `fib`) → add **memoization** (caching) to avoid exponential blowup —
+  this is the bridge to Dynamic Programming.
+- Know your language's recursion depth limit (Python ~1000 by default).

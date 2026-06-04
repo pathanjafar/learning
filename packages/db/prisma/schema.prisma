@@ -1,0 +1,185 @@
+// Postgres-only data model (Mongo dropped per architecture decision). Content MDX bodies
+// live in TEXT columns; flexible bags (starterCode/solutions/drivers/hints) live in JSONB.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+enum Level {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum IoMode {
+  STDIO // user submits a full program reading stdin / writing stdout
+  FUNCTION // user implements a signature; a per-problem driver wraps it
+}
+
+enum CompareMode {
+  EXACT
+  TRIMMED
+  FLOAT
+  UNORDERED
+}
+
+model User {
+  id           Int          @id @default(autoincrement())
+  name         String
+  email        String       @unique
+  role         Role         @default(STUDENT)
+  passwordHash String
+  createdAt    DateTime     @default(now())
+  submissions  Submission[]
+  progress     Progress[]
+  streak       Streak?
+}
+
+model Track {
+  id       Int     @id @default(autoincrement())
+  slug     String  @unique
+  title    String
+  category String
+  order    Int     @default(0)
+  topics   Topic[]
+}
+
+model Topic {
+  id                 Int                 @id @default(autoincrement())
+  track              Track               @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  trackId            Int
+  slug               String
+  title              String
+  order              Int                 @default(0)
+  cheatsheetMdx      String?
+  lessons            Lesson[]
+  problems           Problem[]
+  projects           Project[]
+  interviewQuestions InterviewQuestion[]
+
+  @@unique([trackId, slug])
+}
+
+model Project {
+  id             Int        @id @default(autoincrement())
+  topic          Topic      @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topicId        Int
+  slug           String     @unique
+  title          String
+  difficulty     Difficulty @default(EASY)
+  order          Int        @default(0)
+  briefMdx       String // requirements / spec
+  starterRepoUrl String? // optional scaffold to clone
+}
+
+model Lesson {
+  id         Int    @id @default(autoincrement())
+  topic      Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topicId    Int
+  slug       String
+  title      String
+  level      Level
+  order      Int    @default(0)
+  contentMdx String
+
+  @@unique([topicId, slug])
+}
+
+model Problem {
+  id           Int          @id @default(autoincrement())
+  topic        Topic        @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topicId      Int
+  slug         String       @unique
+  title        String
+  difficulty   Difficulty
+  ioMode       IoMode       @default(FUNCTION)
+  // Languages this problem accepts, e.g. ["python","java"]
+  languages    String[]
+  // { python: "def twoSum(...):\n    pass", java: "class Solution {...}" }
+  starterCode  Json
+  // FUNCTION-mode driver templates per language; each contains a {{SOLUTION}} placeholder.
+  // null for STDIO problems.
+  drivers      Json?
+  // Revealable reference solutions: { python: "...", java: "..." }
+  solutions    Json
+  hints        Json?
+  statementMdx String
+  testCases    TestCase[]
+  submissions  Submission[]
+}
+
+model TestCase {
+  id          Int         @id @default(autoincrement())
+  problem     Problem     @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  problemId   Int
+  input       String
+  expected    String
+  isHidden    Boolean     @default(false)
+  compareMode CompareMode @default(TRIMMED)
+  weight      Int         @default(1)
+  order       Int         @default(0)
+}
+
+model Submission {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  problem   Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  problemId Int
+  code      String
+  lang      String
+  verdict   String // AC | WA | TLE | MLE | RE | CE
+  passed    Int
+  total     Int
+  runtimeMs Int?
+  memoryKb  Int?
+  createdAt DateTime @default(now())
+
+  @@index([userId, problemId])
+}
+
+model Progress {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  topicId   Int
+  lessonId  Int?
+  problemId Int?
+  status    String // not_started | in_progress | completed | solved
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, lessonId, problemId])
+}
+
+model Streak {
+  userId         Int       @id
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  current        Int       @default(0)
+  longest        Int       @default(0)
+  lastActiveDate DateTime?
+}
+
+model InterviewQuestion {
+  id          Int    @id @default(autoincrement())
+  topic       Topic  @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  topicId     Int
+  type        String // conceptual | coding
+  questionMdx String
+  answerMdx   String
+}

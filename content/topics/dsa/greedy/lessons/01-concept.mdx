@@ -1,0 +1,46 @@
+---
+title: "Greedy Algorithms"
+level: BEGINNER
+order: 1
+---
+
+# Greedy Algorithms
+
+A **greedy** algorithm builds a solution step by step, always taking the choice that looks best
+**right now**, never reconsidering. When it works, it's simple and fast — but it doesn't work for
+every problem.
+
+## The mindset
+
+At each step, make the locally optimal choice and hope it leads to a globally optimal result.
+
+```python
+def max_coins(coins, amount):      # works for canonical coin systems
+    coins.sort(reverse=True)
+    count = 0
+    for c in coins:
+        count += amount // c       # take as many big coins as possible
+        amount %= c
+    return count if amount == 0 else -1
+```
+
+## When greedy is correct
+
+Only when the problem has the **greedy-choice property** (a local optimum leads to a global
+optimum) and **optimal substructure**. Classic examples that *do* work:
+
+- Interval scheduling — sort by end time, take earliest-finishing
+- Huffman coding
+- Dijkstra's algorithm
+- Jump Game, Gas Station, assigning cookies
+
+## When it fails
+
+If a locally best choice can block a better overall solution, greedy gives a wrong answer — use
+**Dynamic Programming** instead. Example: the 0/1 knapsack and arbitrary coin systems need DP.
+
+## How to tell them apart
+
+Try a counterexample. If you can construct an input where the greedy pick leads to a worse total,
+greedy is unsafe. Often you must **prove** greedy correctness (exchange argument) before trusting
+it in an interview.

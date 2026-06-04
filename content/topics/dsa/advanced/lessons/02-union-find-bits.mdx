@@ -1,0 +1,57 @@
+---
+title: "Union-Find & Bit Manipulation in Depth"
+level: ADVANCED
+order: 2
+---
+
+# Union-Find & Bit Manipulation
+
+## Union-Find (Disjoint Set Union)
+
+Tracks which elements belong to the same group, with near-O(1) operations after two optimizations.
+
+```python
+class DSU:
+    def __init__(self, n):
+        self.parent = list(range(n))
+        self.rank = [0] * n
+    def find(self, x):
+        while self.parent[x] != x:
+            self.parent[x] = self.parent[self.parent[x]]   # path compression
+            x = self.parent[x]
+        return x
+    def union(self, a, b):
+        ra, rb = self.find(a), self.find(b)
+        if ra == rb: return False                          # already connected (cycle!)
+        if self.rank[ra] < self.rank[rb]: ra, rb = rb, ra  # union by rank
+        self.parent[rb] = ra
+        if self.rank[ra] == self.rank[rb]: self.rank[ra] += 1
+        return True
+```
+Powers: connected components, cycle detection in undirected graphs, Kruskal's MST, account merge,
+"number of provinces."
+
+## Bit manipulation toolkit
+
+```python
+x & 1               # is odd?
+x >> 1              # divide by 2
+x & (x - 1)         # drop the lowest set bit  (count bits by repeating)
+x & -x              # isolate the lowest set bit
+x ^ y               # XOR: a^a=0, a^0=a  -> find the unique element
+1 << k              # the kth bit set (bitmasks / subsets)
+```
+
+**Single number:** XOR everything; pairs cancel, the lone value remains — O(n), O(1).
+**Subsets via bitmask:** iterate `mask` from `0` to `2ⁿ-1`; bit `i` set means include element `i`.
+**Bitmask DP:** encode a set of visited states in an int (e.g. Travelling Salesman).
+
+## Pointers to the rest
+
+- **Segment tree / Fenwick (BIT)** — range queries with point updates in O(log n) when data
+  changes (a prefix-sum array isn't enough).
+- **KMP / Manacher** — O(n) pattern matching and longest palindrome.
+- **Binary lifting** — O(log n) kth-ancestor / LCA queries after O(n log n) preprocessing.
+
+**Recognition cue:** "are these connected / merge groups" → Union-Find; "single/duplicate," subset
+enumeration, or tight state encoding → bits.

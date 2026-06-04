@@ -1,0 +1,49 @@
+---
+title: "Advanced Topics Overview"
+level: ADVANCED
+order: 1
+---
+
+# Advanced Topics
+
+A tour of techniques that show up in harder interviews and competitive programming, building on
+the earlier patterns.
+
+## Union-Find (Disjoint Set Union)
+
+Tracks connected components with near-O(1) `union`/`find` (path compression + union by rank).
+Used for connectivity, cycle detection, Kruskal's MST.
+
+## Bit manipulation
+
+Using binary operations for speed and space:
+```python
+x & (x - 1)   # drop lowest set bit
+x & -x        # isolate lowest set bit
+x ^ y         # XOR — find the single non-duplicate
+```
+Used in: single number, subsets via bitmask, counting bits.
+
+## Advanced graphs
+
+- **Topological sort** — order a DAG by dependencies (course schedule)
+- **Dijkstra / Bellman-Ford / Floyd-Warshall** — shortest paths under various conditions
+- **Minimum spanning tree** — Kruskal, Prim
+
+## Segment trees & Fenwick (BIT)
+
+Answer **range queries** (sum/min/max) with point updates in O(log n) — when a prefix-sum array
+isn't enough because the data changes.
+
+## Advanced DP
+
+- DP on subsequences, intervals, trees
+- **Bitmask DP** (travelling salesman style)
+- State-machine DP (stock problems with cooldown)
+
+## String algorithms
+
+KMP and Rabin-Karp for O(n) pattern matching; suffix structures for substring problems.
+
+> These are **breadth pointers**, not full lessons. Each deserves its own deep dive — treat this
+> as a map of where to go after mastering the core 16 patterns.

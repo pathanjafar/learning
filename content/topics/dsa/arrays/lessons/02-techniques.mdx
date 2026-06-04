@@ -1,0 +1,53 @@
+---
+title: "Array techniques: two pointers, in-place, prefix sums"
+level: INTERMEDIATE
+order: 2
+---
+
+# Core array techniques
+
+Most array problems reduce to one of a handful of techniques. Recognizing which applies is the
+real skill.
+
+## Two pointers
+
+Use two indices moving toward each other (or in the same direction) to avoid a nested loop.
+Great for sorted arrays, partitioning, and "from both ends" problems.
+
+```python
+l, r = 0, len(a) - 1
+while l < r:
+    # decide which pointer to move based on a condition
+    ...
+```
+
+Used in: container-with-most-water, **trapping rain water**, 3-sum (after sorting).
+
+## In-place modification
+
+When asked to modify an array without extra space, keep a **write pointer** for the next valid
+slot while a read pointer scans:
+
+```python
+pos = 0
+for i in range(len(a)):
+    if keep(a[i]):
+        a[pos] = a[i]
+        pos += 1
+```
+
+Used in: remove-duplicates, **move-zeroes**, remove-element.
+
+## Prefix / suffix products & sums
+
+Precompute cumulative values so each query is O(1). The trick behind **product-except-self**
+and subarray-sum problems.
+
+```python
+prefix[0] = 0
+for i in range(n):
+    prefix[i + 1] = prefix[i] + a[i]
+# sum of a[l..r] == prefix[r + 1] - prefix[l]
+```
+
+Next: the advanced lesson covers Kadane's algorithm and the two-pointer water trap in depth.

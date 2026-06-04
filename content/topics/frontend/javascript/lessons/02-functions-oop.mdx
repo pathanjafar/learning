@@ -1,0 +1,57 @@
+---
+title: "Functions, Scope, OOP & Functional"
+level: INTERMEDIATE
+order: 2
+---
+
+# Functions, OOP & Functional JS
+
+## Functions & scope
+
+```js
+function declared() {}          // hoisted
+const expr = function () {};     // not hoisted
+const arrow = (a, b) => a + b;   // concise; no own `this`
+```
+
+- **Default & rest params:** `function f(a, b = 1, ...rest) {}`
+- **Closures** — an inner function "remembers" variables from its outer scope even after the
+  outer function returns:
+```js
+function counter() {
+  let n = 0;
+  return () => ++n;     // closes over n
+}
+const next = counter(); next(); // 1, then 2...
+```
+- **Higher-order functions** take or return functions (callbacks, `map`, etc.).
+
+## Object-Oriented Programming
+
+```js
+class User {
+  #password;                    // private field
+  constructor(name) { this.name = name; }
+  greet() { return `Hi ${this.name}`; }
+  get label() { return this.name.toUpperCase(); }  // getter
+  static fromJSON(j) { return new User(j.name); }  // static
+}
+class Admin extends User {
+  constructor(name) { super(name); this.role = "admin"; }
+}
+```
+
+Under the hood JS uses **prototypes**: objects link to a prototype, and property lookups walk the
+**prototype chain**. `class` is syntax sugar over this. `this` refers to the calling object (or is
+lexically bound in arrow functions).
+
+## Functional programming
+
+- **Pure functions** — same input → same output, no side effects.
+- **Immutability** — don't mutate; return new values (`[...arr, x]`, `{...obj, k: v}`).
+- **map / filter / reduce** — transform data declaratively:
+```js
+const total = orders.filter(o => o.paid).map(o => o.amount).reduce((a, b) => a + b, 0);
+```
+- **Composition & currying** combine small functions; **memoization** caches results of pure
+  functions for speed.

@@ -1,0 +1,55 @@
+---
+title: "Linked Lists"
+level: BEGINNER
+order: 1
+---
+
+# Linked Lists
+
+A **linked list** stores elements in nodes, each holding a value and a pointer to the next node.
+Unlike arrays, elements aren't contiguous in memory.
+
+```python
+class Node:
+    def __init__(self, val, next=None):
+        self.val = val
+        self.next = next
+```
+
+## Array vs linked list
+
+| | Array | Linked list |
+|---|-------|-------------|
+| Access by index | O(1) | O(n) |
+| Insert/delete at head | O(n) | **O(1)** |
+| Memory | contiguous | scattered + pointer overhead |
+
+Use a linked list when you do many insertions/deletions at the ends or middle and rarely need
+random access.
+
+## The three essential techniques
+
+**1. Dummy head** — simplifies edge cases when the head might change:
+```python
+dummy = Node(0, head)
+# ... operate, then return dummy.next
+```
+
+**2. Two pointers (fast/slow)** — find the middle or detect a cycle:
+```python
+slow = fast = head
+while fast and fast.next:
+    slow = slow.next
+    fast = fast.next.next      # slow ends at the middle
+```
+
+**3. Reversal** — rewire `next` pointers in place:
+```python
+prev = None
+while head:
+    head.next, prev, head = prev, head, head.next
+return prev
+```
+
+Used in: reverse list, detect cycle, merge sorted lists, remove Nth from end, LRU cache.
+Variants: singly, doubly, and circular linked lists.

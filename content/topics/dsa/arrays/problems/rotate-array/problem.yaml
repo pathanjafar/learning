@@ -1,0 +1,10 @@
+slug: rotate-array
+title: Rotate Array
+difficulty: medium
+ioMode: function
+languages:
+  - python
+  - java
+hints:
+  - "Rotating right by k sends the element at index i to (i + k) % n."
+  - "Reduce k modulo n first; k can be larger than the array length."

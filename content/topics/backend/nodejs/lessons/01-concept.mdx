@@ -1,0 +1,54 @@
+---
+title: "Node.js: JavaScript on the server"
+level: BEGINNER
+order: 1
+---
+
+# Node.js
+
+**Node.js** runs JavaScript outside the browser, letting you build servers, CLIs, and tooling. It
+uses an **event-driven, non-blocking** I/O model that handles many concurrent connections
+efficiently on a single thread.
+
+## Modules & npm
+
+```js
+// import (ESM)
+import express from "express";
+// the npm registry hosts millions of packages; install with: npm install <pkg>
+```
+
+`package.json` declares dependencies and scripts. `npm install` fetches them into `node_modules`.
+
+## A minimal HTTP server (Express)
+
+```js
+import express from "express";
+const app = express();
+app.use(express.json());
+
+app.get("/health", (req, res) => res.json({ ok: true }));
+app.post("/echo", (req, res) => res.json(req.body));
+
+app.listen(3000, () => console.log("listening on :3000"));
+```
+
+## The async model
+
+Node never blocks waiting for I/O (files, network, DB). Use `async/await`:
+```js
+import { readFile } from "fs/promises";
+const text = await readFile("data.txt", "utf8");
+```
+
+## What you build with it
+
+- REST/GraphQL APIs (Express, Fastify, NestJS)
+- Real-time apps (WebSockets)
+- Build tools and CLIs
+- Full-stack apps (the backend of this platform is Node + Express)
+
+## Key concepts
+
+The event loop, streams, the module system, environment variables (`process.env`), and the npm
+ecosystem. Node shines for I/O-heavy services; CPU-heavy work needs worker threads or another tool.

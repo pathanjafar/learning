@@ -1,0 +1,19 @@
+# Python FUNCTION-mode driver template.
+# Replace {{SOLUTION}} with the user's code (which must define the required function), and
+# customize the stdin parsing + result serialization for the specific problem.
+
+{{SOLUTION}}
+
+import sys, json
+
+def _main():
+    data = sys.stdin.read().splitlines()
+    # ---- problem-specific parsing goes here ----
+    # arg0 = json.loads(data[0])
+    # arg1 = int(data[1])
+    # result = solutionFunction(arg0, arg1)
+    # ---- canonical serialization ----
+    # print(json.dumps(result))
+    pass
+
+_main()

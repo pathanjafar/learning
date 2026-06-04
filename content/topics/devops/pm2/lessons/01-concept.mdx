@@ -1,0 +1,53 @@
+---
+title: "PM2: Node process manager"
+level: BEGINNER
+order: 1
+---
+
+# PM2
+
+**PM2** is a production process manager for Node.js. It keeps your app **running forever** —
+restarting it if it crashes, running multiple instances across CPU cores, and managing logs.
+
+## The problem it solves
+
+Running `node server.js` directly means: if it crashes, it stays down; if the server reboots,
+nothing restarts it; and you only use one CPU core. PM2 fixes all three.
+
+## Core commands
+
+```bash
+pm2 start server.js --name api     # start & name a process
+pm2 list                           # see all processes
+pm2 logs api                       # tail logs
+pm2 restart api                    # restart
+pm2 stop api                       # stop
+pm2 startup && pm2 save            # auto-start on server reboot
+```
+
+## Cluster mode — use all CPU cores
+
+```bash
+pm2 start server.js -i max         # one worker per CPU core
+```
+
+Node is single-threaded; cluster mode forks multiple workers and load-balances across them.
+
+## Ecosystem file
+
+Configure apps declaratively:
+```js
+// ecosystem.config.js
+module.exports = {
+  apps: [{ name: "api", script: "server.js", instances: "max", env: { NODE_ENV: "production" } }]
+};
+```
+```bash
+pm2 start ecosystem.config.js
+```
+
+## When to use it
+
+PM2 is ideal for running Node apps on a **VM/VPS** directly. Note: when you deploy with **Docker**
+(like this platform does), the container runtime often handles restarts instead — PM2 and Docker
+solve overlapping problems, so you typically pick one based on your deployment model.

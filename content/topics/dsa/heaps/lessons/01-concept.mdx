@@ -1,0 +1,49 @@
+---
+title: "Heaps & Priority Queues"
+level: BEGINNER
+order: 1
+---
+
+# Heaps
+
+A **heap** is a complete binary tree (stored compactly in an array) that keeps the
+smallest (min-heap) or largest (max-heap) element at the root. It's the engine behind a
+**priority queue**.
+
+## Costs
+
+| Operation | Cost |
+|-----------|------|
+| peek min/max | O(1) |
+| push | O(log n) |
+| pop | O(log n) |
+| build from n items | O(n) |
+
+## Python (`heapq` is a min-heap)
+
+```python
+import heapq
+h = []
+heapq.heappush(h, 5)
+heapq.heappush(h, 1)
+smallest = heapq.heappop(h)   # 1
+# max-heap trick: push negatives
+```
+
+## Java
+
+```java
+PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+```
+
+## When to use it
+
+Whenever you repeatedly need the **current min/max** while items keep arriving:
+
+- **Top-K / Kth largest** — keep a size-K heap → O(n log k)
+- **Merge K sorted lists** — heap of list heads
+- **Median of a stream** — two heaps (max-heap of lows, min-heap of highs)
+- **Dijkstra's shortest path** — min-heap by distance
+
+A heap gives you "best so far" in O(log n) without keeping everything fully sorted.

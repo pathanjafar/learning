@@ -1,0 +1,60 @@
+---
+title: "OOP, Functional & the Standard Library"
+level: INTERMEDIATE
+order: 2
+---
+
+# OOP, Functional Python & the Standard Library
+
+## Object-Oriented Python
+
+```python
+from abc import ABC, abstractmethod
+
+class Animal(ABC):
+    def __init__(self, name):
+        self.name = name           # instance variable
+    species = "unknown"            # class variable
+    @abstractmethod
+    def sound(self): ...
+
+class Dog(Animal):
+    species = "dog"
+    def sound(self): return "woof"
+    def __str__(self): return f"Dog({self.name})"   # magic method
+```
+
+- **`__init__`** is the constructor; **instance** vs **class** variables differ in scope.
+- **Inheritance & overriding**, **polymorphism**, and **encapsulation** (`_protected`, `__private`).
+- **Magic methods** (`__str__`, `__repr__`, `__eq__`, `__len__`) integrate your objects with
+  Python syntax.
+- **`@property`** for getters/setters; **ABCs** define interfaces.
+
+## Functional features
+
+```python
+nums = [1, 2, 3, 4]
+evens = list(filter(lambda n: n % 2 == 0, nums))
+doubled = list(map(lambda n: n * 2, nums))
+from functools import reduce
+total = reduce(lambda a, b: a + b, nums)
+```
+First-class functions, closures, and **decorators** (`@wraps`) wrap behavior around functions.
+
+## File handling
+
+```python
+with open("data.json") as f:        # context manager auto-closes
+    import json
+    data = json.load(f)
+```
+The `with` statement guarantees cleanup. Handle CSV/JSON with the `csv`/`json` modules.
+
+## Standard library highlights
+
+- **`collections`** — `Counter`, `defaultdict`, `deque`
+- **`itertools`** — `chain`, `product`, `combinations`
+- **`functools`** — `reduce`, `lru_cache`, `partial`
+- **`datetime`** — dates/times; **`re`** — regular expressions
+
+"Batteries included" means you rarely need a dependency for common tasks.

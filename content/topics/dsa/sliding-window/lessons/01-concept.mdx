@@ -1,0 +1,49 @@
+---
+title: "Sliding Window"
+level: BEGINNER
+order: 1
+---
+
+# Sliding Window
+
+A **sliding window** maintains a contiguous range `[left, right]` over an array or string and
+slides it instead of recomputing from scratch. It turns many O(n·k) or O(n²) subarray problems
+into **O(n)**.
+
+## Fixed-size window
+
+When the window length `k` is fixed, add the entering element and remove the leaving one:
+
+```python
+def max_sum_k(a, k):
+    window = sum(a[:k])
+    best = window
+    for r in range(k, len(a)):
+        window += a[r] - a[r - k]   # slide: add new, drop old
+        best = max(best, window)
+    return best
+```
+
+## Variable-size window
+
+Grow the window with `right`; when a constraint breaks, shrink from `left`:
+
+```python
+def longest_unique(s):
+    seen = set()
+    l = best = 0
+    for r in range(len(s)):
+        while s[r] in seen:        # shrink until valid
+            seen.remove(s[l]); l += 1
+        seen.add(s[r])
+        best = max(best, r - l + 1)
+    return best
+```
+
+## When to use it
+
+The problem mentions a **contiguous** subarray/substring and asks for a max/min/longest/shortest
+or a sum/count under a constraint. Each element enters and leaves the window at most once → O(n).
+
+Used in: longest substring without repeats, min window substring, max sum subarray of size k,
+fruits-into-baskets.

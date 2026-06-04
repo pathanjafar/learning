@@ -1,0 +1,6 @@
+[
+  { "input": "[2,7,11,15]\n9", "expected": "[0, 1]", "isHidden": false, "compareMode": "TRIMMED" },
+  { "input": "[3,2,4]\n6", "expected": "[1, 2]", "isHidden": false, "compareMode": "TRIMMED" },
+  { "input": "[3,3]\n6", "expected": "[0, 1]", "isHidden": true, "compareMode": "TRIMMED" },
+  { "input": "[1,2,3,4,5,6,7,8,9,10]\n19", "expected": "[8, 9]", "isHidden": true, "compareMode": "TRIMMED" }
+]

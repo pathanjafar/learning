@@ -1,0 +1,60 @@
+---
+title: "Responsive Design, Styling & Architecture"
+level: ADVANCED
+order: 3
+---
+
+# Responsive Design, Styling & Architecture
+
+## Responsive design
+
+Design **mobile-first**: write base styles for small screens, then layer on larger breakpoints.
+
+```css
+.card { padding: 1rem; }                 /* mobile default */
+@media (min-width: 768px) {              /* tablet+ */
+  .card { padding: 2rem; }
+}
+```
+
+- Common breakpoints: ~640px, 768px, 1024px, 1280px.
+- **Fluid typography/spacing** with `clamp()`: `font-size: clamp(1rem, 2vw + 1rem, 2rem);`
+- **Container queries** (`@container`) style based on a parent's size, not the viewport.
+
+## Styling techniques
+
+**Colors:** `#hex`, `rgb()`, `hsl()` (intuitive for adjusting lightness). Gradients:
+```css
+background: linear-gradient(90deg, #6366f1, #8b5cf6);
+```
+
+**Typography:** `font-family`, `font-size`, `font-weight`, `line-height`, `letter-spacing`. Load
+web fonts via `@font-face` or a provider; control loading with `font-display: swap`.
+
+**Animations & transitions:**
+```css
+.btn { transition: transform 200ms ease; }
+.btn:hover { transform: scale(1.05); }
+
+@keyframes fade { from { opacity: 0 } to { opacity: 1 } }
+.modal { animation: fade 300ms ease forwards; }
+```
+Animate `transform` and `opacity` (GPU-accelerated) rather than `width`/`top` to avoid layout
+thrashing.
+
+## Advanced & architecture
+
+**CSS custom properties (variables):**
+```css
+:root { --accent: #6366f1; }
+.btn { color: var(--accent, blue); }   /* with fallback */
+```
+They cascade, can be read/set from JS, and power theming/dark mode.
+
+**Preprocessors (SASS/SCSS):** variables, nesting, `@mixin`/`@include`, `@extend`, and partials
+for modular files — compiled to CSS.
+
+**Methodologies** keep large codebases sane:
+- **BEM** — `block__element--modifier` naming for predictable, flat specificity.
+- **OOCSS / SMACSS** — separate structure from skin; categorize rules.
+- **Utility-first** (Tailwind) — compose from atomic classes (its own topic).

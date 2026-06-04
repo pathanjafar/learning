@@ -1,0 +1,57 @@
+---
+title: "SQL: querying relational data"
+level: BEGINNER
+order: 1
+---
+
+# SQL
+
+**SQL** (Structured Query Language) is how you talk to relational databases. Data lives in
+**tables** (rows and columns), and SQL lets you create, read, update, and delete it.
+
+## The core query: SELECT
+
+```sql
+SELECT name, email
+FROM users
+WHERE active = true
+ORDER BY created_at DESC
+LIMIT 10;
+```
+
+Read it as: pick these columns, from this table, matching this condition, sorted, limited.
+
+## CRUD statements
+
+```sql
+INSERT INTO users (name, email) VALUES ('Ada', 'ada@x.com');
+UPDATE users SET active = false WHERE id = 1;
+DELETE FROM users WHERE id = 1;
+```
+
+## Joining tables
+
+Relational power comes from combining tables on shared keys:
+```sql
+SELECT u.name, o.total
+FROM users u
+JOIN orders o ON o.user_id = u.id
+WHERE o.total > 100;
+```
+
+Join types: `INNER` (matches only), `LEFT` (all left rows + matches), etc.
+
+## Aggregation
+
+```sql
+SELECT user_id, COUNT(*) AS order_count, SUM(total) AS spent
+FROM orders
+GROUP BY user_id
+HAVING SUM(total) > 500;
+```
+
+## Key concepts
+
+Primary keys (unique row id), foreign keys (links between tables), indexes (speed up lookups),
+and normalization (avoid duplicated data). SQL is declarative — you say *what* you want, the
+database figures out *how*. Next: PostgreSQL, a powerful SQL database.

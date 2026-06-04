@@ -1,0 +1,10 @@
+slug: move-zeroes
+title: Move Zeroes
+difficulty: easy
+ioMode: function
+languages:
+  - python
+  - java
+hints:
+  - "Keep a write pointer for the next non-zero slot."
+  - "Swap each non-zero element into place as you scan; order of non-zeros is preserved."

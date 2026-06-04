@@ -1,0 +1,54 @@
+---
+title: "Cluster Mode, Ecosystem Files & Monitoring"
+level: INTERMEDIATE
+order: 2
+---
+
+# Scaling & Configuring PM2
+
+## Cluster mode — use every CPU core
+
+Node runs on one thread; cluster mode forks workers and load-balances across them.
+```bash
+pm2 start server.js -i max          # one worker per CPU core
+pm2 start server.js -i 4            # or a fixed number
+pm2 scale api +2                    # add 2 more workers at runtime
+```
+Workers share the listening port; PM2 round-robins connections. Your app must be **stateless**
+(no in-memory sessions) for this to work across workers.
+
+## Ecosystem file
+
+Declare apps and environments in one place instead of long CLI commands:
+```js
+// ecosystem.config.js
+module.exports = {
+  apps: [{
+    name: "api",
+    script: "dist/server.js",
+    instances: "max",
+    exec_mode: "cluster",
+    env: { NODE_ENV: "development", PORT: 4000 },
+    env_production: { NODE_ENV: "production", PORT: 8080 },
+    max_memory_restart: "500M",       // restart a worker if it leaks
+  }],
+};
+```
+```bash
+pm2 start ecosystem.config.js --env production
+```
+
+## Logs & monitoring
+
+```bash
+pm2 logs api          # tail stdout/stderr
+pm2 monit             # live CPU/memory dashboard
+pm2 status            # process table
+pm2 describe api      # detailed info
+```
+PM2 aggregates per-process logs and restarts counts, so you can see crash loops at a glance.
+
+## Environment management
+
+Keep secrets in env vars (or a `.env` loaded by your app), and switch profiles with `--env`.
+Never commit production secrets into the ecosystem file.

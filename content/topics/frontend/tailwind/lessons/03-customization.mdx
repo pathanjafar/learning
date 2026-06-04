@@ -1,0 +1,56 @@
+---
+title: "Customization, Optimization & Components"
+level: ADVANCED
+order: 3
+---
+
+# Customizing & Scaling Tailwind
+
+## The config file
+
+`tailwind.config.js` is where you extend or override the design system:
+
+```js
+module.exports = {
+  content: ["./app/**/*.{ts,tsx}"],   // files to scan for classes
+  theme: {
+    extend: {
+      colors: { brand: "#6366f1" },     // -> bg-brand, text-brand
+      spacing: { 18: "4.5rem" },        // -> p-18, m-18
+      fontFamily: { sans: ["Inter", "sans-serif"] },
+    },
+  },
+  plugins: [require("@tailwindcss/forms")],
+};
+```
+
+`extend` adds to the defaults; putting values directly under `theme` *replaces* them.
+
+## Custom utilities & components
+
+```css
+@layer components {
+  .btn { @apply px-4 py-2 rounded-lg bg-brand text-white; }
+}
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+}
+```
+
+`@apply` extracts repeated utility groups into a class — useful for buttons/cards you reuse a lot.
+
+## Optimization
+
+Tailwind's **JIT** engine generates only the classes you actually use by scanning the files in
+`content`. Unused styles never ship, so production CSS is tiny (often <10 KB). Make sure `content`
+globs cover every template, or classes get purged by mistake.
+
+## Building a component system
+
+Combine the above to create a real design system:
+- Define tokens (colors, spacing, fonts) in the config.
+- Build reusable components (in React/Vue) that encapsulate utility combinations.
+- Use `@apply` sparingly for truly repeated primitives.
+- Extract a component library so the team composes from consistent building blocks.
+
+The result: consistent design, tiny CSS, and styling that lives next to your markup.

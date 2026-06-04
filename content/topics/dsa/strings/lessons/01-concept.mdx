@@ -1,0 +1,90 @@
+---
+title: "Strings: text as a sequence"
+level: BEGINNER
+order: 1
+---
+
+# Strings
+
+A **string** is an ordered sequence of characters. Under the hood it's backed by an array, so
+index access is **O(1)** — but the language-level rules around *mutability* are what trip people
+up in interviews.
+
+## Immutability
+
+In both Python and Java, strings are **immutable**: every "edit" creates a brand-new string.
+
+```python
+s = "cat"
+s += "s"          # builds a NEW string "cats"; the old "cat" is untouched
+```
+
+```java
+String s = "cat";
+s = s + "s";       // also builds a NEW String; the old one is discarded
+```
+
+This matters for complexity. Building a string by repeated concatenation inside a loop is
+**O(n²)** because each `+` copies everything so far. The fix is to collect pieces and join once,
+or use a mutable buffer.
+
+```python
+# O(n) — collect then join
+parts = []
+for ch in source:
+    parts.append(transform(ch))
+result = "".join(parts)
+```
+
+```java
+// O(n) — StringBuilder is the mutable buffer
+StringBuilder sb = new StringBuilder();
+for (char ch : source.toCharArray()) {
+    sb.append(transform(ch));
+}
+String result = sb.toString();
+```
+
+## The char-array view
+
+When you need to mutate characters in place, convert to a list/array of characters, work on it,
+then convert back.
+
+```python
+chars = list(s)      # ['c', 'a', 't']
+chars[0] = 'b'
+s = "".join(chars)   # "bat"
+```
+
+```java
+char[] chars = s.toCharArray();
+chars[0] = 'b';
+s = new String(chars);   // "bat"
+```
+
+## Common operations & costs
+
+- Access by index: **O(1)**
+- Length: **O(1)**
+- Concatenation of two strings of length m, n: **O(m + n)**
+- Substring of length k: **O(k)** (a copy is made)
+- Search for a pattern of length m in text of length n: **O(n·m)** naive, **O(n + m)** with KMP
+- Compare two strings: **O(min length)**
+
+## The character-count trick
+
+A huge share of string problems ("are these anagrams?", "first unique character", "can this form
+a palindrome?") reduce to **counting characters**. A 26-slot array (lowercase letters) or a hash
+map turns a nested comparison into a single linear pass.
+
+```python
+from collections import Counter
+counts = Counter(s)        # {'a': 3, 'b': 1, ...} in O(n)
+```
+
+```java
+int[] counts = new int[26];
+for (char c : s.toCharArray()) counts[c - 'a']++;   // O(n)
+```
+
+Next: the techniques lesson covers reversing, palindromes, anagrams, and two pointers on strings.

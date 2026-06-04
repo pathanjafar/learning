@@ -1,0 +1,10 @@
+slug: maximum-subarray
+title: Maximum Subarray
+difficulty: medium
+ioMode: function
+languages:
+  - python
+  - java
+hints:
+  - "At each index, the best subarray ending here either starts fresh or extends the previous."
+  - "Seed with nums[0] (not 0) so all-negative arrays work."

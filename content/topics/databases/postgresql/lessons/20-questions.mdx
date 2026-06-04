@@ -1,0 +1,36 @@
+---
+title: "Practice & Interview Questions"
+level: ADVANCED
+order: 20
+---
+
+# Practice & Interview Questions
+
+> Attempt these on your own — no answers are provided. Write the queries and test them.
+
+## Practice tasks
+
+**Easy**
+1. Create a table with `SERIAL`, `TEXT`, `TIMESTAMPTZ`, and a `UNIQUE` constraint.
+2. Insert rows and query with `WHERE` and `ORDER BY`.
+3. Store and query a `JSONB` column.
+
+**Medium**
+4. Add an index and confirm its use with `EXPLAIN ANALYZE`.
+5. Use a transaction with `BEGIN`/`COMMIT`/`ROLLBACK`.
+6. Write an upsert with `INSERT ... ON CONFLICT`.
+7. Query inside a `JSONB` field with `->` / `->>`.
+
+**Hard**
+8. Use a window function for running totals.
+9. Build a full-text search query.
+10. Write a recursive CTE.
+
+## Interview questions
+
+1. What does Postgres add over the SQL standard (types, JSONB, extensions)?
+2. How does MVCC let readers and writers not block each other?
+3. When would you use a `JSONB` column vs a normalized table?
+4. How do you diagnose a slow query?
+5. What index types does Postgres offer (B-tree, GIN, GiST)?
+6. What is a connection pool and why does it matter?

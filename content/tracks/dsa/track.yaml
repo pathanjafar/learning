@@ -1,0 +1,7 @@
+slug: dsa
+title: Data Structures & Algorithms
+category: DSA
+order: 1
+# Pattern order to populate (each becomes a topic folder under content/topics/dsa/):
+# arrays, strings, hashing, two-pointers, sliding-window, stack-queue, linked-list,
+# recursion, trees, bst, heaps, graphs, greedy, dynamic-programming, tries, backtracking, advanced
