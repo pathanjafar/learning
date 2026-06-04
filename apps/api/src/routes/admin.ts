@@ -1,8 +1,7 @@
 import { Router } from "express";
 import { z } from "zod";
-import { prisma } from "@reborn/db";
+import { prisma } from "../db.js";
 import { requireAuth, requireAdmin } from "../middleware.js";
-import { callGrader } from "../graderClient.js";
 
 export const adminRouter = Router();
 adminRouter.use(requireAuth, requireAdmin); // every admin route re-checks the role server-side
@@ -87,29 +86,4 @@ adminRouter.post("/problems", async (req, res) => {
 adminRouter.delete("/problems/:slug", async (req, res) => {
   await prisma.problem.delete({ where: { slug: req.params.slug } }).catch(() => {});
   res.json({ ok: true });
-});
-
-// Dry-run: confirm the test cases are self-consistent by grading the stored reference solution.
-adminRouter.post("/problems/:slug/dry-run", async (req, res) => {
-  const language = z.string().parse(req.body?.language);
-  const problem = await prisma.problem.findUnique({
-    where: { slug: req.params.slug },
-    include: { testCases: { orderBy: { order: "asc" } } },
-  });
-  if (!problem) return res.status(404).json({ error: "problem not found" });
-  const solutions = problem.solutions as Record<string, string>;
-  const drivers = (problem.drivers as Record<string, string> | null) ?? {};
-  if (!solutions[language]) return res.status(400).json({ error: `no reference solution for ${language}` });
-
-  const grade = await callGrader({
-    language,
-    code: solutions[language],
-    ioMode: problem.ioMode,
-    driver: problem.ioMode === "FUNCTION" ? drivers[language] : undefined,
-    testCases: problem.testCases.map((t) => ({
-      input: t.input, expected: t.expected, isHidden: false, compareMode: t.compareMode, weight: t.weight,
-    })),
-  });
-  // A healthy problem: the reference solution passes everything.
-  res.json({ healthy: grade.verdict === "AC", ...grade });
 });

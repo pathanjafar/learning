@@ -3,59 +3,49 @@ services:
     name: reborn-api
     runtime: docker
     plan: free
-    region: oregon  # change if needed (us-east, eu-west, ap-south, etc.)
-    healthCheckPath: /health
-    dockerfilePath: apps/api/Dockerfile
+    region: oregon
+    dockerfilePath: ./apps/api/Dockerfile
     dockerContext: .
+    healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
-        scope: service
-        sync: false
+        fromDatabase:
+          name: reborn-postgres
+          property: connectionString
       - key: AUTH_JWT_SECRET
-        scope: service
-        sync: false
-      - key: API_PORT
+        generateValue: true
+      - key: PORT
         value: "4000"
       - key: NODE_ENV
         value: production
-    # Run migrations on every deploy
-    postdeploy: npm run db:migrate && npm run db:seed
 
   - type: web
     name: reborn-web
     runtime: docker
     plan: free
     region: oregon
-    healthCheckPath: /
-    dockerfilePath: apps/web/Dockerfile
+    dockerfilePath: ./apps/web/Dockerfile
     dockerContext: .
+    healthCheckPath: /
     envVars:
       - key: NEXTAUTH_URL
-        scope: service
         sync: false
       - key: NEXTAUTH_SECRET
-        scope: service
-        sync: false
-      - key: NEXT_PUBLIC_API_URL
-        scope: service
-        sync: false
+        generateValue: true
       - key: API_INTERNAL_URL
-        value: https://reborn-api.onrender.com
+        fromService:
+          type: web
+          name: reborn-api
+          property: hostport
+      - key: PORT
+        value: "3000"
       - key: NODE_ENV
         value: production
-    depends:
-      - reborn-api
 
-  - type: pserv
-    name: reborn-postgres
-    runtime: postgres15
+databases:
+  - name: reborn-postgres
     plan: free
     region: oregon
-    ipAllowList: []  # only accessible from Render services on same account
-    envVars:
-      - key: POSTGRES_USER
-        value: reborn
-      - key: POSTGRES_PASSWORD
-        generateValue: true
-      - key: POSTGRES_DB
-        value: reborn
+    databaseName: reborn
+    user: reborn
+    ipAllowList: []

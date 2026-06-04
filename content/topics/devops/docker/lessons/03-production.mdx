@@ -52,5 +52,5 @@ A CI pipeline builds, scans, pushes a tagged image, then the server pulls and re
 - **Kubernetes** — industry-standard for scaling: pods, deployments, services, auto-healing, and
   horizontal autoscaling across many nodes.
 
-> Note the **cgroup** gotcha for privileged workloads (like the Judge0 sandbox this app uses):
+> Note the **cgroup** gotcha for privileged workloads:
 > some kernels default to cgroup v2 and need configuration — a classic production surprise.

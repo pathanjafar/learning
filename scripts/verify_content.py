@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline content verifier — the dry-run, without Judge0.
+"""Offline content verifier for stored reference solutions.
 
 For every problem under content/topics, wrap the reference solution in its driver, run it against
 every test case (in each supported language), and confirm the output matches `expected`. Catches

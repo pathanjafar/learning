@@ -2,7 +2,7 @@
   "name": "reborn",
   "private": true,
   "version": "0.1.0",
-  "description": "Learn-to-code + DSA platform with in-browser execution and auto-grading.",
+  "description": "Learn-to-code + DSA platform with instructor-reviewed code submissions.",
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -10,6 +10,7 @@
   "scripts": {
     "db:generate": "npm --workspace packages/db run generate",
     "db:migrate": "npm --workspace packages/db run migrate",
+    "db:migrate:deploy": "npm --workspace packages/db run migrate:deploy",
     "db:seed": "npm --workspace packages/db run seed",
     "dev:web": "npm --workspace apps/web run dev",
     "dev:api": "npm --workspace apps/api run dev",

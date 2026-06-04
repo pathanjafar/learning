@@ -17,5 +17,5 @@ app.use("/", submitRouter);
 app.use("/", meRouter);
 app.use("/admin", adminRouter);
 
-const port = Number(process.env.API_PORT || 4000);
+const port = Number(process.env.PORT || process.env.API_PORT || 4000);
 app.listen(port, () => console.log(`api listening on :${port}`));

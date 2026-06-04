@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { prisma } from "@reborn/db";
+import { prisma } from "../db.js";
 import { requireAuth } from "../middleware.js";
 
 export const contentRouter = Router();

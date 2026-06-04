@@ -4,8 +4,8 @@ import Link from "next/link";
 import Providers from "@/components/Providers";
 
 export const metadata: Metadata = {
-  title: "Reborn — Learn to Code & DSA",
-  description: "Structured lessons, in-browser code grading, and interview prep for frontend, backend, databases, DevOps, and DSA.",
+  title: "Reborn - Learn to Code & DSA",
+  description: "Structured lessons, instructor-reviewed coding practice, and interview prep.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

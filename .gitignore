@@ -11,4 +11,5 @@ __pycache__/
 .venv/
 .DS_Store
 coverage/
+*.tsbuildinfo
 packages/db/prisma/*.db

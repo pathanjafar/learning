@@ -1,7 +1,8 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-const API = process.env.API_INTERNAL_URL || "http://localhost:4000";
+const configuredApi = process.env.API_INTERNAL_URL || "http://localhost:4000";
+const API = /^https?:\/\//.test(configuredApi) ? configuredApi : `http://${configuredApi}`;
 
 // NextAuth delegates credential checking to the Node API, which is the auth authority and
 // issues the HS256 JWT both services trust. We stash that JWT in the session so the browser

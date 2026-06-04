@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
-import { prisma } from "@reborn/db";
+import { prisma } from "../db.js";
 import { requireAuth } from "../middleware.js";
 
 export const meRouter = Router();

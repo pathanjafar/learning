@@ -4,6 +4,10 @@ import { createHash } from "node:crypto";
 
 const SECRET = process.env.AUTH_JWT_SECRET || "dev-insecure-secret";
 
+if (process.env.NODE_ENV === "production" && !process.env.AUTH_JWT_SECRET) {
+  throw new Error("AUTH_JWT_SECRET is required in production");
+}
+
 export interface TokenPayload {
   sub: number;
   email: string;
@@ -16,7 +20,7 @@ export function signToken(p: TokenPayload): string {
 }
 
 export function verifyToken(token: string): TokenPayload {
-  return jwt.verify(token, SECRET) as TokenPayload;
+  return jwt.verify(token, SECRET) as unknown as TokenPayload;
 }
 
 export async function hashPassword(pw: string): Promise<string> {

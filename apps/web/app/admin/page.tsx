@@ -17,7 +17,7 @@ export default function AdminHome() {
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
         <Link href="/admin/problems/new" className="rounded-lg border border-slate-800 bg-panel p-5 hover:border-accent">
           <div className="font-semibold text-white">New / edit problem</div>
-          <div className="text-sm text-slate-500 mt-1">Statement, languages, test cases, dry-run check</div>
+          <div className="text-sm text-slate-500 mt-1">Statement, languages, and test cases</div>
         </Link>
       </div>
       <p className="mt-8 text-sm text-slate-500">

@@ -14,15 +14,14 @@ To add a topic (e.g. `react`, `docker`, `sql`, or a DSA pattern like `strings`):
 
 No application code changes are ever needed to add content. That's the scalability contract.
 
-## Grading modes
+## Problem modes
 
 - **FUNCTION** (most DSA + algorithm problems): user implements a signature; you provide a
   `drivers/<lang>` file with a `{{SOLUTION}}` placeholder that parses stdin and prints output.
 - **STDIO** (full-program exercises): set `ioMode: stdio`, omit `drivers/`; the user's program
   reads the test `input` from stdin and writes the answer to stdout.
 
-## Topics that aren't auto-gradable yet (HTML/CSS layout, Nginx config, etc.)
+## Visual and configuration topics
 
-Use lessons + interview questions + projects for now. Auto-grading visual/config topics is a
-later milestone (e.g. DOM-snapshot or config-lint graders) — the content structure already
+Use lessons + interview questions + projects for visual and configuration topics. The content structure
 supports adding those problem types without schema changes.

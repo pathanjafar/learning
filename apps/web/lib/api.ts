@@ -1,6 +1,6 @@
-// Server-side fetch uses the internal URL; the browser uses the public one.
-const SERVER_API = process.env.API_INTERNAL_URL || "http://localhost:4000";
-export const BROWSER_API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+const configuredApi = process.env.API_INTERNAL_URL || "http://localhost:4000";
+const SERVER_API = /^https?:\/\//.test(configuredApi) ? configuredApi : `http://${configuredApi}`;
+export const BROWSER_API = "/backend";
 
 export async function serverGet<T>(path: string): Promise<T | null> {
   const r = await fetch(`${SERVER_API}${path}`, { cache: "no-store" });

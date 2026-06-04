@@ -1,12 +1,12 @@
 # Runner harness templates
 
-Judge0 only executes whole programs over stdin/stdout. DSA problems are usually
+The offline content verifier executes whole programs over stdin/stdout. DSA problems are usually
 **function-signature** ("implement `twoSum`"), so each `FUNCTION`-mode problem ships a thin
 **driver** per language that: parses stdin → calls the user's solution → prints a canonical
 result to stdout.
 
 These files are **copy-to-author templates**. Each contains a `{{SOLUTION}}` placeholder; the
-grader replaces it with the user's submitted code before sending to Judge0. A real problem keeps
+offline verifier replaces it with the stored reference solution. A real problem keeps
 its own filled-in drivers under `content/.../problems/<slug>/drivers/<lang>.<ext>` (see the
 `two-sum` sample).
 
