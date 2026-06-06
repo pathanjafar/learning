@@ -25,6 +25,15 @@ export default function ProblemWorkbench({ problem }: { problem: ProblemView }) 
   const [result, setResult] = useState<SubmissionResult | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
+  // Expose current editor context to the window for the AI Bot to read
+  require("react").useEffect(() => {
+    (window as any).__rebornEditor = {
+      language: lang,
+      code: code,
+    };
+  }, [lang, code]);
+
+
   function switchLang(language: string) {
     setLang(language);
     setCode(problem.starterCode[language] ?? "");

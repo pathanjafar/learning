@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Providers from "@/components/Providers";
+import AiBot from "@/components/AiBot";
 
 export const metadata: Metadata = {
   title: "Reborn - Learn to Code & DSA",
@@ -23,8 +24,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </nav>
           </header>
           <main className="max-w-6xl mx-auto px-6 py-8">{children}</main>
+          <AiBot />
         </Providers>
       </body>
     </html>
   );
 }
+
