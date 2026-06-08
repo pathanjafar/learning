@@ -2,7 +2,15 @@ import Link from "next/link";
 import { serverGet, type TrackView } from "@/lib/api";
 
 export default async function Home() {
-  const tracks = (await serverGet<TrackView[]>("/tracks")) ?? [];
+  let tracks: TrackView[] = [];
+  let apiError = false;
+  
+  try {
+    const result = await serverGet<TrackView[]>("/tracks");
+    tracks = result ?? [];
+  } catch (error) {
+    apiError = true;
+  }
 
   return (
     <div>
@@ -14,7 +22,11 @@ export default async function Home() {
         </p>
       </section>
 
-      {tracks.length === 0 ? (
+      {apiError ? (
+        <p className="text-red-500 p-4 border border-red-500 rounded">
+          Unable to connect to API. Please check your configuration or try again in a moment.
+        </p>
+      ) : tracks.length === 0 ? (
         <p className="text-slate-500">No tracks yet. Run <code>npm run db:seed</code> to load content.</p>
       ) : (
         <div className="grid gap-6 md:grid-cols-2">
