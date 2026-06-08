@@ -1,17 +1,58 @@
 import Link from "next/link";
-import { serverGet, type TrackView } from "@/lib/api";
+import { BROWSER_API, type TrackView } from "@/lib/api";
+
+async function TracksSection() {
+  return (
+    <>
+      <div id="tracks-container" className="grid gap-6 md:grid-cols-2 mb-10 min-h-10">
+        <p className="text-slate-500">Loading tracks...</p>
+      </div>
+
+      <p className="mt-10 text-sm text-slate-500">
+        Try the sample problem:{" "}
+        <Link className="text-accent underline" href="/problems/two-sum">Two Sum</Link>
+      </p>
+
+      <script
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: `
+            (async () => {
+              try {
+                const res = await fetch('${BROWSER_API}/tracks');
+                const tracks = await res.json();
+                const container = document.getElementById('tracks-container');
+                if (!tracks.length) {
+                  container.innerHTML = '<p class="text-slate-500">No tracks yet. Run <code>npm run db:seed</code> to load content.</p>';
+                } else {
+                  container.innerHTML = tracks.map(track => \`
+                    <a href="/tracks/\${track.slug}" class="rounded-xl border border-slate-800 bg-panel p-5 hover:border-accent transition block">
+                      <div class="text-xs uppercase tracking-wide text-accent">\${track.category}</div>
+                      <h2 class="text-xl font-semibold text-white mt-1">\${track.title}</h2>
+                      <ul class="mt-3 space-y-1 text-sm">
+                        \${track.topics.map(topic => \`
+                          <li class="flex justify-between text-slate-300">
+                            <span>\${topic.title}</span>
+                            <span class="text-slate-500">\${topic._count.lessons} lessons / \${topic._count.problems} problems</span>
+                          </li>
+                        \`).join('')}
+                        \${!track.topics.length ? '<li class="text-slate-500">Topics coming soon</li>' : ''}
+                      </ul>
+                    </a>
+                  \`).join('');
+                }
+              } catch (e) {
+                document.getElementById('tracks-container').innerHTML = '<p class="text-red-500">Unable to load tracks. Please refresh the page.</p>';
+              }
+            })();
+          `
+        }}
+      />
+    </>
+  );
+}
 
 export default async function Home() {
-  let tracks: TrackView[] = [];
-  let apiError = false;
-  
-  try {
-    const result = await serverGet<TrackView[]>("/tracks");
-    tracks = result ?? [];
-  } catch (error) {
-    apiError = true;
-  }
-
   return (
     <div>
       <section className="mb-10">
@@ -22,39 +63,7 @@ export default async function Home() {
         </p>
       </section>
 
-      {apiError ? (
-        <p className="text-red-500 p-4 border border-red-500 rounded">
-          Unable to connect to API. Please check your configuration or try again in a moment.
-        </p>
-      ) : tracks.length === 0 ? (
-        <p className="text-slate-500">No tracks yet. Run <code>npm run db:seed</code> to load content.</p>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2">
-          {tracks.map((track) => (
-            <Link key={track.id} href={`/tracks/${track.slug}`}
-              className="rounded-xl border border-slate-800 bg-panel p-5 hover:border-accent transition block">
-              <div className="text-xs uppercase tracking-wide text-accent">{track.category}</div>
-              <h2 className="text-xl font-semibold text-white mt-1">{track.title}</h2>
-              <ul className="mt-3 space-y-1 text-sm">
-                {track.topics.map((topic) => (
-                  <li key={topic.id} className="flex justify-between text-slate-300">
-                    <span>{topic.title}</span>
-                    <span className="text-slate-500">
-                      {topic._count.lessons} lessons / {topic._count.problems} problems
-                    </span>
-                  </li>
-                ))}
-                {track.topics.length === 0 && <li className="text-slate-500">Topics coming soon</li>}
-              </ul>
-            </Link>
-          ))}
-        </div>
-      )}
-
-      <p className="mt-10 text-sm text-slate-500">
-        Try the sample problem:{" "}
-        <Link className="text-accent underline" href="/problems/two-sum">Two Sum</Link>
-      </p>
+      <TracksSection />
     </div>
   );
 }
