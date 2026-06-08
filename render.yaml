@@ -29,7 +29,7 @@ services:
     healthCheckPath: /
     envVars:
       - key: NEXTAUTH_URL
-        value: https://reborn-web-xe01.onrender.com
+        value: "https://reborn-web-xe01.onrender.com"
       - key: NEXTAUTH_SECRET
         generateValue: true
       - key: API_INTERNAL_URL
