@@ -14,6 +14,7 @@
     "db:seed": "npm --workspace packages/db run seed",
     "dev:web": "npm --workspace apps/web run dev",
     "dev:api": "npm --workspace apps/api run dev",
+    "start": "node apps/web/server.js",
     "build": "npm --workspace apps/web run build && npm --workspace apps/api run build",
     "compose:up": "docker compose -f infra/docker-compose.yml up -d --build",
     "compose:down": "docker compose -f infra/docker-compose.yml down"
